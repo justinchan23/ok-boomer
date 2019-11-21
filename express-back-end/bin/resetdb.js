@@ -1,9 +1,9 @@
 // load .env data into process.env
 const ENV = process.env.ENV || "development";
 
-if (ENV === "development") {
-  require("dotenv").config();
-}
+// if (ENV === "development") {
+//   require("dotenv").config();
+// }
 
 // other dependencies
 const fs = require("fs");

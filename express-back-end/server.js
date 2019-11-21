@@ -1,9 +1,9 @@
 // load .env data into process.env
-const ENV = process.env.ENV || "development";
+// const ENV = process.env.ENV || "development";
 
-if (ENV === "development") {
-  require("dotenv").config();
-}
+// if (ENV === "development") {
+//   require("dotenv").config();
+// }
 
 // Web server config
 const PORT = process.env.PORT || 8080;
@@ -15,11 +15,11 @@ const morgan = require("morgan");
 // const cookieSession = require("cookie-session");
 
 // PG database client/connection setup
-const { Pool } = require("pg");
+// const { Pool } = require("pg");
 
-const dbParams = require("./lib/db.js");
-const db = new Pool(dbParams);
-db.connect();
+// const dbParams = require("./lib/db.js");
+// const db = new Pool(dbParams);
+// db.connect();
 
 // Express Configuration
 App.use(BodyParser.urlencoded({ extended: false }));
