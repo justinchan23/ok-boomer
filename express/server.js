@@ -29,19 +29,32 @@ app.get("/api/data", (req, res) =>
   })
 );
 
+io.origins("*:*");
+
 io.on("connection", socket => {
   console.log("a user connected");
+  // the following two will emit to all the sockets connected to `/`
+  io.sockets.emit("hi", "everyone");
+  io.emit("hi", "everyone"); // short form
 
-  console.log(socket);
   //use this to differenciate players
+  console.log(socket.id);
+
+  //syntax for response from app
+  //  socket.on('functionName', function (data) {
+  //   console.log(data);
+  // });
 
   socket.on("disconnect", function() {
     console.log("user disconnected");
   });
 
-  //When theres a new player
-  socket.on("newPlayer", () => {
+  // When theres a new player
+  //when new player is clicked client side,
+  //returns the socket.id
+  socket.on("newPlayer", data => {
     console.log("newPlayer");
+    console.log(data);
   });
 
   //Player movement

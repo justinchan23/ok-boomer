@@ -18,12 +18,8 @@ function preload() {
   this.load.image("doggy", "assets/doggy.png");
 }
 
-function create() {
+function create(keystroke) {
   dog = this.add.image(400, 300, "doggy");
-
-  this.input.keyboard.on("keydown-A", () => {
-    dog.x -= 4;
-  });
 
   this.input.keyboard.on("keydown-D", () => {
     dog.x += 4;
