@@ -1,38 +1,28 @@
-import React, { Component } from 'react';
-import axios from 'axios';
-import './App.css';
+import React, { Component } from "react";
+import io from "socket.io-client";
+// import { Button } from "@bit/grommet.grommet.button";
+
+const socket = io("http://192.168.88.84:3001");
 
 class App extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super();
     this.state = {
-      message: 'Click the button to load data!'
-    }
-  }
-
-  fetchData = () => {
-    axios.get('/api/data') // You can simply make your requests to "/api/whatever you want"
-    .then((response) => {
-      // handle success
-      console.log(response.data) // The entire response from the Rails API
-
-      console.log(response.data.message) // Just the message
-      this.setState({
-        message: response.data.message
-      });
-    }) 
+      player: ""
+    };
   }
 
   render() {
+    // testing for socket connections
     return (
-      <div className="App">
-        <h1>{ this.state.message }</h1>
-        <button onClick={this.fetchData} >
-          Fetch Data
-        </button>        
+      <div style={{ textAlign: "center" }}>
+        <button onClick={() => socket.emit("newPlayer")}>New Player</button>
+        <button onClick={() => socket.emit("Left")}>Move Left</button>
+        <button onClick={() => socket.emit("Right")}>Move Right</button>
+        <button onClick={() => socket.emit("Up")}>Move Up</button>
+        <button onClick={() => socket.emit("Down")}>Move Down</button>
       </div>
     );
   }
 }
-
 export default App;
