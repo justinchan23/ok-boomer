@@ -15,6 +15,7 @@ class StartScene extends Phaser.Scene {
   }
 
   create() {
+    this.socket = io();
     this.map = this.make.tilemap({ key: "map1" });
     //this.map = this.add.tilemap("map1");
     const tileset = this.map.addTilesetImage("blocks", "blocks");
