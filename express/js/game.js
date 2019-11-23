@@ -1,10 +1,13 @@
 /* eslint-disable func-style */
-
+let up;
+let left;
+let right;
+let down;
 let dog;
 
 class StartScene extends Phaser.Scene {
   preload() {
-    this.load.image("doggy", "assets/doggy.png");
+    this.load.image("white", "assets/characters/white.png");
 
     this.load.image("blocks", "assets/maps/blocks.png");
     this.load.image("floor", "assets/maps/floor.png");
@@ -21,26 +24,26 @@ class StartScene extends Phaser.Scene {
     this.floorLayer = this.map.createStaticLayer("floor", tileset2);
 
     //character loading
-    this.player = this.physics.add.image(640, 640, "doggy");
-    //character movment
-    this.input.keyboard.on("keydown-A", () => {
-      this.player.body.setVelocityX(-400);
-    });
+    this.player = this.physics.add.image(640, 640, "white");
 
-    this.input.keyboard.on("keydown-D", () => {
-      this.player.body.setVelocityX(400);
-    });
-
-    this.input.keyboard.on("keydown-W", () => {
-      this.player.body.setVelocityY(-400);
-    });
-
-    this.input.keyboard.on("keydown-S", () => {
-      this.player.body.setVelocityY(400);
-    });
+    up = this.input.keyboard.addKey("W");
+    left = this.input.keyboard.addKey("A");
+    right = this.input.keyboard.addKey("D");
+    down = this.input.keyboard.addKey("S");
   }
 
-  update() {}
+  update() {
+    //movement for characters
+    if (this.input.keyboard.checkDown(up, 0)) {
+      this.player.y -= 4;
+    } else if (this.input.keyboard.checkDown(left, 0)) {
+      this.player.x -= 4;
+    } else if (this.input.keyboard.checkDown(right, 0)) {
+      this.player.x += 4;
+    } else if (this.input.keyboard.checkDown(down, 0)) {
+      this.player.y += 4;
+    }
+  }
 }
 
 const config = {
