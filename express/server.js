@@ -12,6 +12,8 @@ const server = http.createServer(app);
 // This creates our socket using the instance of the server
 const io = socketIO(server);
 
+const players = {};
+
 app.use(BodyParser.urlencoded({ extended: false }));
 app.use(express.static("public"));
 app.use(morgan("dev"));
@@ -31,47 +33,42 @@ app.get("/api/data", (req, res) =>
 
 io.origins("*:*");
 
+//syntax for response from app
+//  socket.on('functionName', function (data) {
+//   console.log(data);
+// });
+
 io.on("connection", socket => {
-  console.log("a user connected");
-  // the following two will emit to all the sockets connected to `/`
-  io.sockets.emit("hi", "everyone");
-  io.emit("hi", "everyone"); // short form
-
-  //use this to differenciate players
-  console.log(socket.id);
-
-  //syntax for response from app
-  //  socket.on('functionName', function (data) {
-  //   console.log(data);
-  // });
+  console.log("a user connected with the id of ", socket.id);
 
   socket.on("disconnect", function() {
     console.log("user disconnected");
+    io.emit("disconnect", socket.id);
   });
 
-  // When theres a new player
-  //when new player is clicked client side,
-  //returns the socket.id
-  socket.on("newPlayer", data => {
-    console.log("newPlayer");
-    console.log(data);
-  });
+  //  When theres a new player
+  //  when a new client renders the react side,
+  //  returns the socket.id so we can launch new player functionality
 
   //Player movement
-  socket.on("Left", () => {
+  socket.on("Left", data => {
     console.log("Left");
+    console.log("client response to move left", data);
   });
 
-  socket.on("Right", () => {
-    console.log("Right");
+  socket.on("Right", data => {
+    console.log("right");
+    console.log("client response to move right", data);
   });
 
-  socket.on("Up", () => {
+  socket.on("Up", data => {
     console.log("Up");
+    console.log("client response to move up", data);
   });
 
-  socket.on("Down", () => {
+  socket.on("Down", data => {
     console.log("Down");
+    console.log("client response to move down", data);
   });
 });
 
