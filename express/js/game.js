@@ -27,6 +27,8 @@ function preload() {
   this.load.tilemapTiledJSON("map1", "assets/maps/map1.json");
   this.load.image("floor", "assets/maps/floor.png");
   this.load.image("blocks", "assets/maps/blocks.png");
+
+  this.load.image("bomb", "assets/bombs/bomb1.png");
 }
 
 function create() {
@@ -49,6 +51,9 @@ function create() {
   left = this.input.keyboard.addKey("A");
   right = this.input.keyboard.addKey("D");
   down = this.input.keyboard.addKey("S");
+
+  //bombs
+  this.bomb = this.physics.add.sprite(160, 96, "bomb").setScale(1.473);
 }
 
 const speed = 200;
