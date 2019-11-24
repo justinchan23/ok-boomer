@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+let classNames = require("classnames");
 
 class Button extends Component {
   constructor() {
@@ -6,27 +7,24 @@ class Button extends Component {
     this.state = {
       // endpoint: "/players"
     };
-
-    // socketClient = io(this.state.endpoint);
   }
 
   render() {
+    const buttonClass = classNames("button", {
+      "button--left": this.props.left,
+      "button--right": this.props.right,
+      "button--down": this.props.down,
+      "button--up": this.props.up,
+      "button--bomb": this.props.bomb
+    });
     return (
       <button
-        onTouchStart={() => {
-          socketClient.emit("playerMovement", {
-            playerID: socketClient.id,
-            move: "Left"
-          });
-        }}
-        onTouchEnd={() => {
-          socketClient.emit("playerMovementEnd", {
-            playerID: socketClient.id,
-            move: "Left"
-          });
-        }}
-        style={{ width: "100px", height: "25px" }}
-      ></button>
+        className={buttonClass}
+        onTouchStart={this.props.onTouchStart}
+        onTouchEnd={this.props.onTouchEnd}
+      >
+        {this.props.children}
+      </button>
     );
   }
 }
