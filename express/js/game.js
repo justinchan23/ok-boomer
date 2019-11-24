@@ -53,21 +53,8 @@ function create() {
   this.chestLayer = this.map.createStaticLayer("chest", [chestSet], 0, 0);
 
   //bombs
-  this.bomb = this.physics.add
-    .sprite(160, 96, "bomb")
-    .setImmovable()
-    .setScale(1.3);
-  this.bomb.setCollideWorldBounds(true);
-
-  this.anims.create({
-    key: "boom",
-    frames: this.anims.generateFrameNumbers("bomb", { start: 0, end: 1 }),
-    frameRate: 2,
-    repeat: -1
-  });
 
   this.player = this.physics.add.sprite(96, 96, "white");
-  this.physics.add.collider(this.player, this.bomb);
 
   //collision for world bounds
   this.player.setCollideWorldBounds(true);
@@ -82,12 +69,18 @@ function create() {
   left = this.input.keyboard.addKey("A");
   right = this.input.keyboard.addKey("D");
   down = this.input.keyboard.addKey("S");
+  space = this.input.keyboard.addKey("SPACE");
+  this.anims.create({
+    key: "boom",
+    frames: this.anims.generateFrameNumbers("bomb", { start: 0, end: 1 }),
+    frameRate: 2,
+    repeat: 2
+  });
 }
 
 const speed = 200;
 function update() {
   //set bomb animations
-  this.bomb.play("boom", true);
   // Stop any previous movement from the last frame
   this.player.body.setVelocity(0);
   // Horizontal movement
@@ -102,6 +95,23 @@ function update() {
   } else if (this.input.keyboard.checkDown(down, 0)) {
     this.player.body.setVelocityY(200);
   }
+  // Spawning Bomb
+  if (this.input.keyboard.checkDown(space, 0)) {
+    this.bomb = this.physics.add
+      .sprite(this.player.x, this.player.y, "bomb")
+      .setImmovable()
+      .setScale(1.3)
+      .setOrigin(0.5, 0.5);
+    this.bomb.play("boom", true);
+
+    let bomb = this.bomb;
+
+    this.bomb.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
+      bomb.destroy();
+    });
+    this.physics.add.collider(this.player, this.bomb);
+  }
+
   // Normalize and scale the velocity so that player can't move faster along a diagonal
   this.player.body.velocity.normalize().scale(speed);
 }
