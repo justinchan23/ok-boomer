@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import io from "socket.io-client";
 // import { Button } from "@bit/grommet.grommet.button";
-let socketClient;
+let socketClient = io("http://192.168.88.61:3001/players");
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      endpoint: "http://192.168.88.84:3001"
+      // endpoint: "/players"
     };
 
-    socketClient = io(this.state.endpoint);
+    // socketClient = io(this.state.endpoint);
   }
 
   render() {
@@ -21,17 +21,50 @@ class App extends Component {
 
     //send socketClient.id back when new player joins/react renders
     return (
-      <div style={{ textAlign: "center" }} onLoad={() => {}}>
-        <button onClick={() => socketClient.emit("Left", socketClient.id)}>
+      <div
+        style={{ textAlign: "center" }}
+        onLoad={() => {
+          socketClient.emit("newPlayer");
+        }}
+      >
+        <button
+          onClick={() =>
+            socketClient.emit("playerMovement", {
+              playerID: socketClient.id,
+              move: "Left"
+            })
+          }
+        >
           Move Left
         </button>
-        <button onClick={() => socketClient.emit("Right", socketClient.id)}>
+        <button
+          onClick={() =>
+            socketClient.emit("playerMovement", {
+              playerID: socketClient.id,
+              move: "Right"
+            })
+          }
+        >
           Move Right
         </button>
-        <button onClick={() => socketClient.emit("Up", socketClient.id)}>
+        <button
+          onClick={() =>
+            socketClient.emit("playerMovement", {
+              playerID: socketClient.id,
+              move: "Up"
+            })
+          }
+        >
           Move Up
         </button>
-        <button onClick={() => socketClient.emit("Down", socketClient.id)}>
+        <button
+          onClick={() =>
+            socketClient.emit("playerMovement", {
+              playerID: socketClient.id,
+              move: "Down"
+            })
+          }
+        >
           Move Down
         </button>
       </div>
