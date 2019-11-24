@@ -30,6 +30,7 @@ function preload() {
 }
 
 function create() {
+  this.socket = io("/game");
   this.map = this.add.tilemap("map1");
 
   let tileset = this.map.addTilesetImage("blocks", "blocks");
@@ -49,6 +50,10 @@ function create() {
   left = this.input.keyboard.addKey("A");
   right = this.input.keyboard.addKey("D");
   down = this.input.keyboard.addKey("S");
+
+  this.socket.on("playerMovement", data => {
+    console.log(data);
+  });
 }
 
 const speed = 200;
