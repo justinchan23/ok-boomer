@@ -28,24 +28,39 @@ function preload() {
   this.load.image("floor", "assets/maps/floor.png");
   this.load.image("blocks", "assets/maps/blocks.png");
 
-  this.load.image("bomb", "assets/bombs/bomb1.png");
+  this.load.spritesheet({
+    key: "bomb",
+    url: "assets/bombs/bomb.png",
+    frameConfig: {
+      frameWidth: 46,
+      frameHeight: 46,
+      startFrame: 0,
+      endFrame: 1
+    }
+  });
+  this.load.image("chests", "assets/maps/chests.png");
 }
 
 function create() {
   this.map = this.add.tilemap("map1");
 
-  let tileset = this.map.addTilesetImage("blocks", "blocks");
-  let tileset2 = this.map.addTilesetImage("floor", "floor");
+  let blockSet = this.map.addTilesetImage("blocks", "blocks");
+  let floorSet = this.map.addTilesetImage("floor", "floor");
+  let chestSet = this.map.addTilesetImage("chests", "chests");
 
-  this.floorLayer = this.map.createStaticLayer("floor", [tileset2], 0, 0);
-  this.blocksLayer = this.map.createStaticLayer("blocks", [tileset], 0, 0);
+  this.blocksLayer = this.map.createStaticLayer("blocks", [blockSet], 0, 0);
+  this.floorLayer = this.map.createStaticLayer("floor", [floorSet], 0, 0);
+  this.chestLayer = this.map.createStaticLayer("chest", [chestSet], 0, 0);
 
   this.player = this.physics.add.sprite(96, 96, "white");
   //collision for world bounds
   this.player.setCollideWorldBounds(true);
 
   this.blocksLayer.setCollisionByProperty({ collides: true });
+  this.chestLayer.setCollisionByProperty({ collides: true });
+
   this.physics.add.collider(this.player, this.blocksLayer);
+  this.physics.add.collider(this.player, this.chestLayer);
 
   up = this.input.keyboard.addKey("W");
   left = this.input.keyboard.addKey("A");
@@ -53,11 +68,26 @@ function create() {
   down = this.input.keyboard.addKey("S");
 
   //bombs
-  this.bomb = this.physics.add.sprite(160, 96, "bomb").setScale(1.473);
+  this.bomb = this.physics.add
+    .sprite(160, 96, "bomb")
+    .setImmovable()
+    .setScale(1.473);
+  this.bomb.setCollideWorldBounds(true);
+
+  this.anims.create({
+    key: "boom",
+    frames: this.anims.generateFrameNumbers("bomb", { start: 0, end: 1 }),
+    frameRate: 2,
+    repeat: -1
+  });
+
+  this.physics.add.collider(this.player, this.bomb);
 }
 
 const speed = 200;
 function update() {
+  //set bomb animations
+  this.bomb.play("boom", true);
   // Stop any previous movement from the last frame
   this.player.body.setVelocity(0);
   // Horizontal movement
