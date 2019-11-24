@@ -52,21 +52,6 @@ function create() {
   this.floorLayer = this.map.createStaticLayer("floor", [floorSet], 0, 0);
   this.chestLayer = this.map.createStaticLayer("chest", [chestSet], 0, 0);
 
-  this.player = this.physics.add.sprite(96, 96, "white");
-  //collision for world bounds
-  this.player.setCollideWorldBounds(true);
-
-  this.blocksLayer.setCollisionByProperty({ collides: true });
-  this.chestLayer.setCollisionByProperty({ collides: true });
-
-  this.physics.add.collider(this.player, this.blocksLayer);
-  this.physics.add.collider(this.player, this.chestLayer);
-
-  up = this.input.keyboard.addKey("W");
-  left = this.input.keyboard.addKey("A");
-  right = this.input.keyboard.addKey("D");
-  down = this.input.keyboard.addKey("S");
-
   //bombs
   this.bomb = this.physics.add
     .sprite(160, 96, "bomb")
@@ -81,7 +66,22 @@ function create() {
     repeat: -1
   });
 
+  this.player = this.physics.add.sprite(96, 96, "white");
   this.physics.add.collider(this.player, this.bomb);
+
+  //collision for world bounds
+  this.player.setCollideWorldBounds(true);
+
+  this.blocksLayer.setCollisionByProperty({ collides: true });
+  this.chestLayer.setCollisionByProperty({ collides: true });
+
+  this.physics.add.collider(this.player, this.blocksLayer);
+  this.physics.add.collider(this.player, this.chestLayer);
+
+  up = this.input.keyboard.addKey("W");
+  left = this.input.keyboard.addKey("A");
+  right = this.input.keyboard.addKey("D");
+  down = this.input.keyboard.addKey("S");
 }
 
 const speed = 200;
