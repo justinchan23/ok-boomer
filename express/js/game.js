@@ -5,7 +5,7 @@ const config = {
   height: 1024,
   physics: {
     default: "arcade",
-    arcade: { debug: false }
+    arcade: { debug: SVGComponentTransferFunctionElement }
   },
   scene: {
     preload: preload,
@@ -71,7 +71,7 @@ function create() {
   this.bomb = this.physics.add
     .sprite(160, 96, "bomb")
     .setImmovable()
-    .setScale(1.473);
+    .setScale(1.3);
   this.bomb.setCollideWorldBounds(true);
 
   this.anims.create({
