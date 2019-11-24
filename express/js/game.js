@@ -4,6 +4,7 @@ let left;
 let right;
 let down;
 let dog;
+let playerData = {};
 
 class StartScene extends Phaser.Scene {
   preload() {
@@ -15,7 +16,11 @@ class StartScene extends Phaser.Scene {
   }
 
   create() {
-    this.socket = io();
+    // this.socket.on("newPlayerServer", data => {
+    //   console.log(data);
+    // });
+    this.socket = io("/game");
+
     this.map = this.make.tilemap({ key: "map1" });
     //this.map = this.add.tilemap("map1");
     const tileset = this.map.addTilesetImage("blocks", "blocks");
@@ -31,10 +36,26 @@ class StartScene extends Phaser.Scene {
     left = this.input.keyboard.addKey("A");
     right = this.input.keyboard.addKey("D");
     down = this.input.keyboard.addKey("S");
+    this.socket.on("playerMovement", data => {
+      playerData = data;
+    });
   }
 
   update() {
     //movement for characters
+    const movePlayer = move => {
+      if (move === "Left") {
+        this.player.x -= 4;
+      } else if (move === "Right") {
+        this.player.x += 4;
+      } else if (move === "Up") {
+        this.player.y -= 4;
+      } else if (move === "Down") {
+        this.player.y += 4;
+      }
+    };
+    movePlayer(playerData.move);
+
     if (this.input.keyboard.checkDown(up, 0)) {
       this.player.y -= 4;
     } else if (this.input.keyboard.checkDown(left, 0)) {

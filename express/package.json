@@ -9,6 +9,7 @@
   "keywords": [],
   "dependencies": {
     "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
     "ejs": "^2.7.4",
     "express": "^4.16.4",
     "morgan": "^1.9.1",
