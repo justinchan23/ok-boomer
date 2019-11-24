@@ -57,14 +57,30 @@ function create() {
   right = this.input.keyboard.addKey("D");
   down = this.input.keyboard.addKey("S");
 
+  const movePlayer = dir => {
+    this.player.body.setVelocity(0);
+
+    if (dir === "Left") {
+      this.player.body.setVelocityX(-200);
+    } else if (dir === "Right") {
+      this.player.body.setVelocityX(200);
+    } else if (dir === "Up") {
+      this.player.body.setVelocityY(-200);
+    } else if (dir === "Down") {
+      this.player.body.setVelocityY(200);
+    }
+    this.player.body.velocity.normalize().scale(speed);
+  };
   this.socket.on("playerMovement", data => {
     console.log(data);
+    movePlayer(data.move);
   });
 }
 
 const speed = 200;
 function update() {
   // Stop any previous movement from the last frame
+
   this.player.body.setVelocity(0);
   // Horizontal movement
   if (this.input.keyboard.checkDown(left, 0)) {

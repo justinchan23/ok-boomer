@@ -40,7 +40,6 @@ io.origins("*:*");
 // });
 
 io.on("connection", socket => {});
-
 //player namespace
 const nspPlayers = io.of("/players");
 // console.log(nspPlayers);
@@ -64,10 +63,19 @@ nspPlayers.on("connection", function(socket) {
 
   socket.on("playerMovement", data => {
     console.log("movingPlayer");
-    nspGame.emit("playerMovement", data);
+    const movePlayer = setInterval(
+      () => {
+        nspGame.emit("playerMovement", data);
+      },
+      100,
+      data
+    );
+    socket.on("playerMovementEnd", () => {
+      console.log("movingPlayerEnd");
+      clearInterval(movePlayer);
+    });
   });
 });
-nspPlayers.emit("hi", "everyone!");
 
 //game namespace
 const nspGame = io.of("/game");
@@ -77,6 +85,5 @@ nspGame.on("connection", function(socket) {
     console.log("someone disconnected", socket.id);
   });
 });
-nspGame.emit("hi", "everyone!");
 
 server.listen(port, () => console.log(`Listening on port ${port}`));
