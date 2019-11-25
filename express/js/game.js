@@ -140,7 +140,7 @@ const speed = 200;
 
 function update() {
   // Stop any previous movement from the last frame
-  this.player.body.setVelocity(0);
+  // this.player.body.setVelocity(0);
   // Horizontal movement
   if (this.input.keyboard.checkDown(left, 0)) {
     this.player.body.setVelocityX(-200);
