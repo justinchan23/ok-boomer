@@ -117,6 +117,8 @@ function update() {
   // Normalize and scale the velocity so that player can't move faster along a diagonal
   this.player.body.velocity.normalize().scale(speed);
 
+  //makes sure players displays above bomb
+  this.player.depth = 1;
   // Spawning Bomb
   if (this.input.keyboard.checkDown(space, 99999)) {
     this.bomb = this.physics.add
