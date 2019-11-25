@@ -1,32 +1,19 @@
-import React, { Component } from "react";
+import React from "react";
 let classNames = require("classnames");
 
-class Button extends Component {
-  constructor() {
-    super();
-    this.state = {
-      // endpoint: "/players"
-    };
-  }
-
-  render() {
-    const buttonClass = classNames("button", {
-      "button--left": this.props.left,
-      "button--right": this.props.right,
-      "button--down": this.props.down,
-      "button--up": this.props.up,
-      "button--bomb": this.props.bomb
-    });
-    return (
-      <button
-        className={buttonClass}
-        onTouchStart={this.props.onTouchStart}
-        onTouchEnd={this.props.onTouchEnd}
-      >
-        {this.props.children}
-      </button>
-    );
-  }
+export default function Button(props) {
+  const buttonClass = classNames("button", {
+    "button--bomb": props.bomb,
+    "button--Arrow": props.arrow
+  });
+  return (
+    <button
+      className={buttonClass}
+      id={props.id}
+      onTouchStart={props.onTouchStart}
+      onTouchEnd={props.onTouchEnd}
+    >
+      {props.children}
+    </button>
+  );
 }
-
-export default Button;

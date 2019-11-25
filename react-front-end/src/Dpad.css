@@ -1,4 +1,4 @@
-.buttonArrow {
+.button--Arrow {
   background: url("vtl_lever_left_off.png");
   height: 80px;
   width: 80px;
@@ -20,10 +20,7 @@
   transform: rotate(-180deg);
 }
 
-.buttonArrow:active {
+.button--Arrow:active {
   opacity: 1;
   outline: none;
-}
-
-.dpad {
 }
