@@ -105,7 +105,7 @@ function create() {
     key: "fire",
     frames: this.anims.generateFrameNumbers("explosion", { start: 0, end: 16 }),
     frameRate: 30,
-    repeat: -1
+    repeat: 0
   });
   const movePlayer = dir => {
     this.player.body.setVelocity(0);
