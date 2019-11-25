@@ -68,11 +68,12 @@ nspPlayers.on("connection", function(socket) {
   socket.on("playerMovement", data => {
     console.log("movingPlayer");
     clearInterval(interval);
-    interval = setInterval(emitPlayerMove, 500, data);
+    interval = setInterval(emitPlayerMove, 100, data);
     // movePlayer(data);
   });
-  socket.on("playerMovementEnd", () => {
+  socket.on("playerMovementEnd", data => {
     console.log("movingPlayerEnd");
+    nspGame.emit("playerMovementEnd", data);
     clearInterval(interval);
   });
 });

@@ -64,8 +64,8 @@ function create() {
   this.blocksLayer.setCollisionByProperty({ collides: true });
   this.chestLayer.setCollisionByProperty({ collides: true });
 
-  this.physics.add.collider(this.player, this.blocksLayer);
-  this.physics.add.collider(this.player, this.chestLayer);
+  // this.physics.add.collider(this.player, this.blocksLayer);
+  // this.physics.add.collider(this.player, this.chestLayer);
 
   up = this.input.keyboard.addKey("W");
   left = this.input.keyboard.addKey("A");
@@ -78,7 +78,6 @@ function create() {
     frameRate: 2,
     repeat: 2
   });
-
   const movePlayer = dir => {
     this.player.body.setVelocity(0);
 
@@ -91,11 +90,16 @@ function create() {
     } else if (dir === "Down") {
       this.player.body.setVelocityY(200);
     }
+
     this.player.body.velocity.normalize().scale(speed);
   };
+
   this.socket.on("playerMovement", data => {
     console.log(data);
     movePlayer(data.move);
+  });
+  this.socket.on("playerMovementEnd", data => {
+    this.player.body.setVelocity(0);
   });
 }
 
@@ -104,19 +108,19 @@ function update() {
   //set bomb animations
   // Stop any previous movement from the last frame
 
-  this.player.body.setVelocity(0);
-  // Horizontal movement
-  if (this.input.keyboard.checkDown(left, 0)) {
-    this.player.body.setVelocityX(-200);
-  } else if (this.input.keyboard.checkDown(right, 0)) {
-    this.player.body.setVelocityX(200);
-  }
-  // Vertical movement
-  if (this.input.keyboard.checkDown(up, 0)) {
-    this.player.body.setVelocityY(-200);
-  } else if (this.input.keyboard.checkDown(down, 0)) {
-    this.player.body.setVelocityY(200);
-  }
+  // this.player.body.setVelocity(0);
+  // // Horizontal movement
+  // if (this.input.keyboard.checkDown(left, 0)) {
+  //   this.player.body.setVelocityX(-200);
+  // } else if (this.input.keyboard.checkDown(right, 0)) {
+  //   this.player.body.setVelocityX(200);
+  // }
+  // // Vertical movement
+  // if (this.input.keyboard.checkDown(up, 0)) {
+  //   this.player.body.setVelocityY(-200);
+  // } else if (this.input.keyboard.checkDown(down, 0)) {
+  //   this.player.body.setVelocityY(200);
+  // }
   // Spawning Bomb
   if (this.input.keyboard.checkDown(space, 0)) {
     this.bomb = this.physics.add
