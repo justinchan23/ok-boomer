@@ -1,0 +1,26 @@
+.button--Arrow {
+  background: url("vtl_lever_left_off.png");
+  height: 80px;
+  width: 80px;
+  border: none;
+  opacity: 75%;
+  outline: none;
+  bottom: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 50px;
+}
+#left {
+  transform: rotate(90deg);
+}
+#right {
+  transform: rotate(-90deg);
+}
+#up {
+  transform: rotate(-180deg);
+}
+
+.button--Arrow:active {
+  opacity: 1;
+  outline: none;
+}

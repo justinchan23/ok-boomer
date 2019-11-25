@@ -5,15 +5,12 @@ const socketIO = require("socket.io");
 const port = 3001;
 const BodyParser = require("body-parser");
 const morgan = require("morgan");
-const cors = require("cors");
 
 // our server instance
 const server = http.createServer(app);
 
 // This creates our socket using the instance of the server
 const io = socketIO(server);
-
-const players = {};
 
 app.use(BodyParser.urlencoded({ extended: false }));
 app.use(express.static("public"));
@@ -39,7 +36,8 @@ io.origins("*:*");
 //   console.log(data);
 // });
 
-io.on("connection", socket => {});
+const players = {};
+// const movePlayer = ;
 
 //player namespace
 const nspPlayers = io.of("/players");
@@ -62,12 +60,28 @@ nspPlayers.on("connection", function(socket) {
     // io.emit("disconnect", socket.id);
   });
 
+  const emitPlayerMove = data => {
+    nspGame.emit("playerMovement", data);
+  };
+  let interval;
+
   socket.on("playerMovement", data => {
     console.log("movingPlayer");
-    nspGame.emit("playerMovement", data);
+    clearInterval(interval);
+    interval = setInterval(emitPlayerMove, 100, data);
+    // movePlayer(data);
+  });
+  socket.on("playerMovementEnd", data => {
+    console.log("movingPlayerEnd");
+    nspGame.emit("playerMovementEnd", data);
+    clearInterval(interval);
+  });
+
+  socket.on("dropBomb", data => {
+    console.log("Dropping bomb");
+    nspGame.emit("dropBomb", data);
   });
 });
-nspPlayers.emit("hi", "everyone!");
 
 //game namespace
 const nspGame = io.of("/game");
@@ -77,6 +91,5 @@ nspGame.on("connection", function(socket) {
     console.log("someone disconnected", socket.id);
   });
 });
-nspGame.emit("hi", "everyone!");
 
 server.listen(port, () => console.log(`Listening on port ${port}`));
