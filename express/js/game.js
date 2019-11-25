@@ -133,6 +133,7 @@ function create() {
 
   this.socket.on("dropBomb", data => {
     console.log(data);
+    dropBomb();
   });
 }
 
@@ -160,10 +161,6 @@ function update() {
   //makes sure players displays above bomb
   this.player.depth = 1;
 
-  //calculates the center of the tile player is standing on
-  const calculateCenterTileXY = playerLocation => {
-    return 32 - (playerLocation % 64) + playerLocation;
-  };
   // Spawning Bomb
   if (this.input.keyboard.checkDown(space, 99999)) {
     this.bomb = this.physics.add
@@ -250,3 +247,91 @@ function update() {
     this.physics.add.collider(this.player, this.bomb);
   }
 }
+//calculates the center of the tile player is standing on
+const calculateCenterTileXY = playerLocation => {
+  return 32 - (playerLocation % 64) + playerLocation;
+};
+const dropBomb = () => {
+  this.bomb = this.physics.add
+    .sprite(
+      calculateCenterTileXY(this.player.x),
+      calculateCenterTileXY(this.player.y),
+      "bomb"
+    )
+    .setImmovable()
+    .setSize(64, 64)
+    .setOrigin(0.5, 0.5);
+
+  this.bomb.play("boom", true);
+
+  let bomb = this.bomb;
+
+  this.bomb.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
+    bomb.destroy();
+
+    // const explosionRadius = (bombXY, bombPower) => {
+    //   return bombXY + bombPower;
+    // };
+
+    //creating explosion animation
+    let bombPower = 50;
+    for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
+      this.explosion = this.physics.add
+        .sprite(bomb.x + blastLength * 64, bomb.y, "fire")
+        .setImmovable()
+        .setSize(64, 64);
+      this.explosion.play("fire", true);
+      let explosion = this.explosion;
+      this.explosion.once(
+        Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
+        () => {
+          explosion.destroy();
+        }
+      );
+    }
+    for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
+      this.explosion = this.physics.add
+        .sprite(bomb.x, bomb.y + blastLength * 64, "fire")
+        .setImmovable()
+        .setSize(64, 64);
+      this.explosion.play("fire", true);
+      let explosion = this.explosion;
+      this.explosion.once(
+        Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
+        () => {
+          explosion.destroy();
+        }
+      );
+    }
+    for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
+      this.explosion = this.physics.add
+        .sprite(bomb.x - blastLength * 64, bomb.y, "fire")
+        .setImmovable()
+        .setSize(64, 64);
+      this.explosion.play("fire", true);
+      let explosion = this.explosion;
+      this.explosion.once(
+        Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
+        () => {
+          explosion.destroy();
+        }
+      );
+    }
+    for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
+      this.explosion = this.physics.add
+        .sprite(bomb.x, bomb.y - blastLength * 64, "fire")
+        .setImmovable()
+        .setSize(64, 64);
+      this.explosion.play("fire", true);
+      let explosion = this.explosion;
+      this.explosion.once(
+        Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
+        () => {
+          explosion.destroy();
+        }
+      );
+    }
+  });
+
+  this.physics.add.collider(this.player, this.bomb);
+};
