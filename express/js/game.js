@@ -101,6 +101,23 @@ function create() {
   this.socket.on("playerMovementEnd", data => {
     this.player.body.setVelocity(0);
   });
+
+  this.socket.on("dropBomb", data => {
+    console.log(data);
+    this.bomb = this.physics.add
+      .sprite(this.player.x, this.player.y, "bomb")
+      .setImmovable()
+      .setScale(1.3)
+      .setOrigin(0.5, 0.5);
+    this.bomb.play("boom", true);
+
+    let bomb = this.bomb;
+
+    this.bomb.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
+      bomb.destroy();
+    });
+    this.physics.add.collider(this.player, this.bomb);
+  });
 }
 
 const speed = 200;
@@ -122,21 +139,21 @@ function update() {
   //   this.player.body.setVelocityY(200);
   // }
   // Spawning Bomb
-  if (this.input.keyboard.checkDown(space, 0)) {
-    this.bomb = this.physics.add
-      .sprite(this.player.x, this.player.y, "bomb")
-      .setImmovable()
-      .setScale(1.3)
-      .setOrigin(0.5, 0.5);
-    this.bomb.play("boom", true);
+  // if (this.input.keyboard.checkDown(space, 0)) {
+  //   this.bomb = this.physics.add
+  //     .sprite(this.player.x, this.player.y, "bomb")
+  //     .setImmovable()
+  //     .setScale(1.3)
+  //     .setOrigin(0.5, 0.5);
+  //   this.bomb.play("boom", true);
 
-    let bomb = this.bomb;
+  //   let bomb = this.bomb;
 
-    this.bomb.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
-      bomb.destroy();
-    });
-    this.physics.add.collider(this.player, this.bomb);
-  }
+  //   this.bomb.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
+  //     bomb.destroy();
+  //   });
+  //   this.physics.add.collider(this.player, this.bomb);
+  // }
 
   // Normalize and scale the velocity so that player can't move faster along a diagonal
   this.player.body.velocity.normalize().scale(speed);

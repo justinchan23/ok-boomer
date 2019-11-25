@@ -76,6 +76,11 @@ nspPlayers.on("connection", function(socket) {
     nspGame.emit("playerMovementEnd", data);
     clearInterval(interval);
   });
+
+  socket.on("dropBomb", data => {
+    console.log("Dropping bomb");
+    nspGame.emit("dropBomb", data);
+  });
 });
 
 //game namespace
