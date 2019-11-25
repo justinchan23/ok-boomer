@@ -99,6 +99,14 @@ function create() {
     frameRate: 3,
     repeat: 2
   });
+
+  //explosion animation
+  this.anims.create({
+    key: "fire",
+    frames: this.anims.generateFrameNumbers("explosion", { start: 0, end: 16 }),
+    frameRate: 30,
+    repeat: 0
+  });
   const movePlayer = dir => {
     this.player.body.setVelocity(0);
 
@@ -125,17 +133,6 @@ function create() {
 
   this.socket.on("dropBomb", data => {
     console.log(data);
-
-    //explosion animation
-    this.anims.create({
-      key: "fire",
-      frames: this.anims.generateFrameNumbers("explosion", {
-        start: 0,
-        end: 16
-      }),
-      frameRate: 30,
-      repeat: 0
-    });
   });
 }
 
