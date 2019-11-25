@@ -61,7 +61,8 @@ function preload() {
 function create() {
   const music = this.sound.add("gamemusic");
   music.loop = true;
-  music.play();
+  // music.play();
+
   this.map = this.add.tilemap("map1");
 
   let blockSet = this.map.addTilesetImage("blocks", "blocks");
@@ -149,69 +150,65 @@ function update() {
       // };
 
       //creating explosion animation
-      this.explosion = this.physics.add
-        .sprite(bomb.x, bomb.y, "fire")
-        .setImmovable()
-        .setScale(1);
-      // .setOrigin(0.5, 0.5);
-      this.explosion.play("fire", true);
-      let explosion = this.explosion;
-      this.explosion.once(
-        Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
-        () => {
-          explosion.destroy();
-        }
-      );
-      // this.explosion = this.physics.add
-      //   .sprite(bomb.x + 64, bomb.y, "fire")
-      //   .setImmovable()
-      //   .setScale(1);
-      // // .setOrigin(0.5, 0.5);
-      // this.explosion.play("fire", true);
-      // this.explosion.once(
-      //   Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
-      //   () => {
-      //     explosion.destroy();
-      //   }
-      // );
-      // this.explosion = this.physics.add
-      //   .sprite(bomb.x - 64, bomb.y, "fire")
-      //   .setImmovable()
-      //   .setScale(1);
-      // // .setOrigin(0.5, 0.5);
-      // this.explosion.play("fire", true);
-      // this.explosion.once(
-      //   Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
-      //   () => {
-      //     explosion.destroy();
-      //   }
-      // );
-      // this.explosion = this.physics.add
-      //   .sprite(bomb.x, bomb.y + 64, "fire")
-      //   .setImmovable()
-      //   .setScale(1);
-      // // .setOrigin(0.5, 0.5);
-      // this.explosion.play("fire", true);
-      // this.explosion.once(
-      //   Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
-      //   () => {
-      //     explosion.destroy();
-      //   }
-      // );
-      // this.explosion = this.physics.add
-      //   .sprite(bomb.x, bomb.y - 64, "fire")
-      //   .setImmovable()
-      //   .setScale(1);
-      // // .setOrigin(0.5, 0.5);
-
-      this.explosion.play("fire", true);
-      this.explosion.once(
-        Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
-        () => {
-          explosion.destroy();
-        }
-      );
+      let bombPower = 50;
+      for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
+        this.explosion = this.physics.add
+          .sprite(bomb.x + blastLength * 64, bomb.y, "fire")
+          .setImmovable()
+          .setSize(64, 64);
+        this.explosion.play("fire", true);
+        let explosion = this.explosion;
+        this.explosion.once(
+          Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
+          () => {
+            explosion.destroy();
+          }
+        );
+      }
+      for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
+        this.explosion = this.physics.add
+          .sprite(bomb.x, bomb.y + blastLength * 64, "fire")
+          .setImmovable()
+          .setSize(64, 64);
+        this.explosion.play("fire", true);
+        let explosion = this.explosion;
+        this.explosion.once(
+          Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
+          () => {
+            explosion.destroy();
+          }
+        );
+      }
+      for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
+        this.explosion = this.physics.add
+          .sprite(bomb.x - blastLength * 64, bomb.y, "fire")
+          .setImmovable()
+          .setSize(64, 64);
+        this.explosion.play("fire", true);
+        let explosion = this.explosion;
+        this.explosion.once(
+          Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
+          () => {
+            explosion.destroy();
+          }
+        );
+      }
+      for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
+        this.explosion = this.physics.add
+          .sprite(bomb.x, bomb.y - blastLength * 64, "fire")
+          .setImmovable()
+          .setSize(64, 64);
+        this.explosion.play("fire", true);
+        let explosion = this.explosion;
+        this.explosion.once(
+          Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
+          () => {
+            explosion.destroy();
+          }
+        );
+      }
     });
+
     this.physics.add.collider(this.player, this.bomb);
   }
 }
