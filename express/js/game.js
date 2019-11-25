@@ -62,7 +62,7 @@ function create() {
   this.floorLayer = this.map.createStaticLayer("floor", [floorSet], 0, 0);
   this.chestLayer = this.map.createStaticLayer("chest", [chestSet], 0, 0);
 
-  this.player = this.physics.add.sprite(96, 96, "white");
+  this.player = this.physics.add.sprite(96, 96, "white").setSize(64, 64);
 
   //collision for world bounds
   this.player.setCollideWorldBounds(true);
@@ -83,7 +83,7 @@ function create() {
   this.anims.create({
     key: "boom",
     frames: this.anims.generateFrameNumbers("bomb", { start: 0, end: 1 }),
-    frameRate: 2,
+    frameRate: 3,
     repeat: 2
   });
 
@@ -91,7 +91,7 @@ function create() {
   this.anims.create({
     key: "fire",
     frames: this.anims.generateFrameNumbers("explosion", { start: 0, end: 16 }),
-    frameRate: 16,
+    frameRate: 30,
     repeat: 0
   });
 }
