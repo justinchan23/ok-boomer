@@ -5,15 +5,12 @@ const socketIO = require("socket.io");
 const port = 3001;
 const BodyParser = require("body-parser");
 const morgan = require("morgan");
-const cors = require("cors");
 
 // our server instance
 const server = http.createServer(app);
 
 // This creates our socket using the instance of the server
 const io = socketIO(server);
-
-const players = {};
 
 app.use(BodyParser.urlencoded({ extended: false }));
 app.use(express.static("public"));
@@ -39,7 +36,9 @@ io.origins("*:*");
 //   console.log(data);
 // });
 
-io.on("connection", socket => {});
+const players = {};
+// const movePlayer = ;
+
 //player namespace
 const nspPlayers = io.of("/players");
 // console.log(nspPlayers);
@@ -61,19 +60,20 @@ nspPlayers.on("connection", function(socket) {
     // io.emit("disconnect", socket.id);
   });
 
+  const emitPlayerMove = data => {
+    nspGame.emit("playerMovement", data);
+  };
+  let interval;
+
   socket.on("playerMovement", data => {
     console.log("movingPlayer");
-    const movePlayer = setInterval(
-      () => {
-        nspGame.emit("playerMovement", data);
-      },
-      100,
-      data
-    );
-    socket.on("playerMovementEnd", () => {
-      console.log("movingPlayerEnd");
-      clearInterval(movePlayer);
-    });
+    clearInterval(interval);
+    interval = setInterval(emitPlayerMove, 500, data);
+    // movePlayer(data);
+  });
+  socket.on("playerMovementEnd", () => {
+    console.log("movingPlayerEnd");
+    clearInterval(interval);
   });
 });
 
