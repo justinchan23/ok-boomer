@@ -81,8 +81,8 @@ function create() {
   this.blocksLayer.setCollisionByProperty({ collides: true });
   this.chestLayer.setCollisionByProperty({ collides: true });
 
-  this.physics.add.collider(this.player, this.blocksLayer);
-  this.physics.add.collider(this.player, this.chestLayer);
+  // this.physics.add.collider(this.player, this.blocksLayer);
+  // this.physics.add.collider(this.player, this.chestLayer);
 
   up = this.input.keyboard.addKey("W");
   left = this.input.keyboard.addKey("A");
@@ -103,7 +103,7 @@ function create() {
     key: "fire",
     frames: this.anims.generateFrameNumbers("explosion", { start: 0, end: 16 }),
     frameRate: 30,
-    repeat: 0
+    repeat: -1
   });
 }
 
@@ -130,12 +130,21 @@ function update() {
 
   //makes sure players displays above bomb
   this.player.depth = 1;
+
+  //calculates the center of the tile player is standing on
+  const calculateCenterTileXY = playerLocation => {
+    return 32 - (playerLocation % 64) + playerLocation;
+  };
   // Spawning Bomb
   if (this.input.keyboard.checkDown(space, 99999)) {
     this.bomb = this.physics.add
-      .sprite(this.player.x, this.player.y, "bomb")
+      .sprite(
+        calculateCenterTileXY(this.player.x),
+        calculateCenterTileXY(this.player.y),
+        "bomb"
+      )
       .setImmovable()
-      .setScale(1.3)
+      .setSize(64, 64)
       .setOrigin(0.5, 0.5);
 
     this.bomb.play("boom", true);
