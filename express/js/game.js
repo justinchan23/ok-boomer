@@ -23,6 +23,13 @@ let down;
 
 function preload() {
   this.load.image("white", "assets/characters/white.png");
+  this.load.audio({
+    key: "gamemusic",
+    url: "assets/audio/music.mp3",
+    config: {
+      loop: true
+    }
+  });
 
   this.load.tilemapTiledJSON("map1", "assets/maps/map1.json");
   this.load.image("floor", "assets/maps/floor.png");
@@ -52,6 +59,9 @@ function preload() {
 }
 
 function create() {
+  const music = this.sound.add("gamemusic");
+  music.loop = true;
+  music.play();
   this.map = this.add.tilemap("map1");
 
   let blockSet = this.map.addTilesetImage("blocks", "blocks");
@@ -134,15 +144,67 @@ function update() {
     this.bomb.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
       bomb.destroy();
 
+      // const explosionRadius = (bombXY, bombPower) => {
+      //   return bombXY + bombPower;
+      // };
+
       //creating explosion animation
       this.explosion = this.physics.add
         .sprite(bomb.x, bomb.y, "fire")
         .setImmovable()
-        .setScale(1)
-        .setOrigin(0.5, 0.5);
-
+        .setScale(1);
+      // .setOrigin(0.5, 0.5);
       this.explosion.play("fire", true);
       let explosion = this.explosion;
+      this.explosion.once(
+        Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
+        () => {
+          explosion.destroy();
+        }
+      );
+      // this.explosion = this.physics.add
+      //   .sprite(bomb.x + 64, bomb.y, "fire")
+      //   .setImmovable()
+      //   .setScale(1);
+      // // .setOrigin(0.5, 0.5);
+      // this.explosion.play("fire", true);
+      // this.explosion.once(
+      //   Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
+      //   () => {
+      //     explosion.destroy();
+      //   }
+      // );
+      // this.explosion = this.physics.add
+      //   .sprite(bomb.x - 64, bomb.y, "fire")
+      //   .setImmovable()
+      //   .setScale(1);
+      // // .setOrigin(0.5, 0.5);
+      // this.explosion.play("fire", true);
+      // this.explosion.once(
+      //   Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
+      //   () => {
+      //     explosion.destroy();
+      //   }
+      // );
+      // this.explosion = this.physics.add
+      //   .sprite(bomb.x, bomb.y + 64, "fire")
+      //   .setImmovable()
+      //   .setScale(1);
+      // // .setOrigin(0.5, 0.5);
+      // this.explosion.play("fire", true);
+      // this.explosion.once(
+      //   Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
+      //   () => {
+      //     explosion.destroy();
+      //   }
+      // );
+      // this.explosion = this.physics.add
+      //   .sprite(bomb.x, bomb.y - 64, "fire")
+      //   .setImmovable()
+      //   .setScale(1);
+      // // .setOrigin(0.5, 0.5);
+
+      this.explosion.play("fire", true);
       this.explosion.once(
         Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
         () => {
