@@ -1,31 +1,29 @@
-.button--left {
-  width: 0;
-  height: 0;
-  border-left: 50px solid transparent;
-  border-right: 50px solid transparent;
-  border-top: 100px solid red;
+.buttonArrow {
+  background: url("vtl_lever_left_off.png");
+  height: 80px;
+  width: 80px;
+  border: none;
+  opacity: 75%;
+  outline: none;
+  bottom: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 50px;
+}
+#left {
+  transform: rotate(90deg);
+}
+#right {
+  transform: rotate(-90deg);
+}
+#up {
+  transform: rotate(-180deg);
 }
 
-.button--right {
-  width: 0;
-  height: 0;
-  border-left: 50px solid transparent;
-  border-right: 50px solid transparent;
-  border-bottom: 100px solid red;
+.buttonArrow:active {
+  opacity: 1;
+  outline: none;
 }
 
-.button--up {
-  width: 0;
-  height: 0;
-  border-top: 50px solid transparent;
-  border-right: 100px solid red;
-  border-bottom: 50px solid transparent;
-}
-
-.button--down {
-  width: 0;
-  height: 0;
-  border-top: 50px solid transparent;
-  border-left: 100px solid red;
-  border-bottom: 50px solid transparent;
+.dpad {
 }
