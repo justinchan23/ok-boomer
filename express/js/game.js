@@ -20,6 +20,7 @@ let up;
 let left;
 let right;
 let down;
+let space;
 
 function preload() {
   this.load.image("white", "assets/characters/white.png");
@@ -70,7 +71,13 @@ function create() {
   left = this.input.keyboard.addKey("A");
   right = this.input.keyboard.addKey("D");
   down = this.input.keyboard.addKey("S");
-<<<<<<< HEAD
+  space = this.input.keyboard.addKey("SPACE");
+  this.anims.create({
+    key: "boom",
+    frames: this.anims.generateFrameNumbers("bomb", { start: 0, end: 1 }),
+    frameRate: 2,
+    repeat: 2
+  });
 
   const movePlayer = dir => {
     this.player.body.setVelocity(0);
@@ -89,14 +96,6 @@ function create() {
   this.socket.on("playerMovement", data => {
     console.log(data);
     movePlayer(data.move);
-=======
-  space = this.input.keyboard.addKey("SPACE");
-  this.anims.create({
-    key: "boom",
-    frames: this.anims.generateFrameNumbers("bomb", { start: 0, end: 1 }),
-    frameRate: 2,
-    repeat: 2
->>>>>>> master
   });
 }
 
