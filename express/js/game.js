@@ -193,73 +193,45 @@ function update() {
       bomb.destroy();
 
       //creating explosion animation
-      let bombPower = 1;
-      for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
-        this.explosion = this.physics.add
-          .sprite(bomb.x + blastLength * 64, bomb.y, "fire")
-          .setImmovable();
-        this.explosion.play("fire", true);
-        let explosion = this.explosion;
-        this.explosion.once(
-          Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
-          () => {
-            explosion.destroy();
-          }
-        );
+      let bombPower = 2;
 
-        function checkOverlap(sprite, explosion) {
-          var boundsA = sprite.getBounds();
-          var boundsB = explosion.getBounds();
-          return Phaser.Geom.Rectangle.Overlaps(boundsA, boundsB);
-        }
-        for (chest of this.chest) {
-          if (checkOverlap(chest, explosion)) {
-            chest.destroy();
+      const explosionDirection = [
+        { x: 0, y: 0 },
+        { x: 0, y: -1 },
+        { x: 1, y: 0 },
+        { x: 0, y: 1 },
+        { x: -1, y: 0 }
+      ];
+
+      for (const direction of explosionDirection) {
+        for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
+          this.explosion = this.physics.add
+            .sprite(
+              bomb.x + direction.x * blastLength * 64,
+              bomb.y + direction.y * blastLength * 64,
+              "fire"
+            )
+            .setImmovable();
+          this.explosion.play("fire", true);
+          let explosion = this.explosion;
+          this.explosion.once(
+            Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
+            () => {
+              explosion.destroy();
+            }
+          );
+          function checkOverlap(sprite, explosion) {
+            var boundsA = sprite.getBounds();
+            var boundsB = explosion.getBounds();
+            return Phaser.Geom.Rectangle.Overlaps(boundsA, boundsB);
+          }
+          for (chest of this.chest) {
+            if (checkOverlap(chest, explosion)) {
+              chest.destroy();
+            }
           }
         }
       }
-      // for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
-      //   this.explosion = this.physics.add
-      //     .sprite(bomb.x, bomb.y + blastLength * 64, "fire")
-      //     .setImmovable()
-      //     .setSize(64, 64);
-      //   this.explosion.play("fire", true);
-      //   let explosion = this.explosion;
-      //   this.explosion.once(
-      //     Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
-      //     () => {
-      //       explosion.destroy();
-      //     }
-      //   );
-      // }
-      // for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
-      //   this.explosion = this.physics.add
-      //     .sprite(bomb.x - blastLength * 64, bomb.y, "fire")
-      //     .setImmovable()
-      //     .setSize(64, 64);
-      //   this.explosion.play("fire", true);
-      //   let explosion = this.explosion;
-      //   this.explosion.once(
-      //     Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
-      //     () => {
-      //       explosion.destroy();
-      //     }
-      //   );
-      // }
-      // for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
-      //   this.explosion = this.physics.add
-      //     .sprite(bomb.x, bomb.y - blastLength * 64, "fire")
-      //     .setImmovable()
-      //     .setSize(64, 64);
-      //   this.explosion.play("fire", true);
-      //   let explosion = this.explosion;
-      //   this.explosion.once(
-      //     Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
-      //     () => {
-      //       explosion.destroy();
-      //     }
-      //   );
-      // }
     });
 
     this.physics.add.collider(this.player, this.bomb);
