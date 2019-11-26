@@ -31,11 +31,6 @@ app.get("/api/data", (req, res) =>
 );
 io.origins("*:*");
 
-//syntax for response from app
-//  socket.on('functionName', function (data) {
-//   console.log(data);
-// });
-
 const players = {};
 // const movePlayer = ;
 
@@ -48,8 +43,8 @@ nspPlayers.on("connection", function(socket) {
   // create a new player and add it to our players object
   players[socket.id] = {
     flipX: false,
-    x: Math.floor(Math.random() * 400) + 50,
-    y: Math.floor(Math.random() * 500) + 50,
+    x: 96,
+    y: 96,
     playerId: socket.id
   };
 
@@ -60,6 +55,11 @@ nspPlayers.on("connection", function(socket) {
     // io.emit("disconnect", socket.id);
   });
 
+  // update all other players of the new player
+  nspGame.emit("newPlayer", players[socket.id]);
+
+  nspGame.emit("allPlayers", players);
+
   const emitPlayerMove = data => {
     nspGame.emit("playerMovement", data);
   };
@@ -69,7 +69,6 @@ nspPlayers.on("connection", function(socket) {
     console.log("movingPlayer");
     clearInterval(interval);
     interval = setInterval(emitPlayerMove, 100, data);
-    // movePlayer(data);
   });
   socket.on("playerMovementEnd", data => {
     console.log("movingPlayerEnd");
