@@ -35,7 +35,10 @@ function preload() {
   this.load.tilemapTiledJSON("map1", "assets/maps/map1.json");
   this.load.image("floor", "assets/maps/floor.png");
   this.load.image("blocks", "assets/maps/blocks.png");
-  this.load.image("chests", "assets/maps/chests.png");
+  this.load.spritesheet("chest", "assets/maps/chests.png", {
+    frameWidth: 64,
+    frameHeight: 64
+  });
 
   this.load.spritesheet({
     key: "bomb",
@@ -69,22 +72,27 @@ function create() {
 
   let blockSet = this.map.addTilesetImage("blocks", "blocks");
   let floorSet = this.map.addTilesetImage("floor", "floor");
-  let chestSet = this.map.addTilesetImage("chests", "chests");
+  // let chestSet = this.map.addTilesetImage("chests", "chests");
 
-  this.blocksLayer = this.map.createStaticLayer("blocks", [blockSet], 0, 0);
-  this.floorLayer = this.map.createStaticLayer("floor", [floorSet], 0, 0);
-  this.chestLayer = this.map.createStaticLayer("chest", [chestSet], 0, 0);
+  this.blocksLayer = this.map.createDynamicLayer("blocks", [
+    blockSet,
+    floorSet
+  ]);
+  this.blocksLayer.setCollisionByProperty({ collides: true });
+  // this.chestLayer = this.map.createDynamicLayer("chest", [chestSet], 0, 0);
 
   this.player = this.physics.add.sprite(96, 96, "white").setSize(64, 64);
+  this.chest = this.map.createFromObjects("chest", 41, { key: "chest" });
 
   //collision for world bounds
   this.player.setCollideWorldBounds(true);
 
-  this.blocksLayer.setCollisionByProperty({ collides: true });
-  this.chestLayer.setCollisionByProperty({ collides: true });
+  this.physics.add.collider(this.player, this.blocksLayer);
 
-  // this.physics.add.collider(this.player, this.blocksLayer);
-  // this.physics.add.collider(this.player, this.chestLayer);
+  const chest = this.physics.add.group(this.chest);
+  this.physics.world.enable(chest);
+  this.physics.add.collider(this.player, chest);
+  this.chest.forEach(c => c.body.setImmovable(true));
 
   up = this.input.keyboard.addKey("W");
   left = this.input.keyboard.addKey("A");
@@ -107,6 +115,7 @@ function create() {
     frameRate: 30,
     repeat: 0
   });
+
   const movePlayer = dir => {
     this.player.body.setVelocity(0);
 
@@ -119,14 +128,14 @@ function create() {
     } else if (dir === "Down") {
       this.player.body.setVelocityY(200);
     }
-
-    this.player.body.velocity.normalize().scale(speed);
   };
 
   this.socket.on("playerMovement", data => {
     console.log(data);
     movePlayer(data.move);
   });
+
+  // Stop any previous movement from the last frame
   this.socket.on("playerMovementEnd", data => {
     this.player.body.setVelocity(0);
   });
@@ -139,8 +148,7 @@ function create() {
 const speed = 200;
 
 function update() {
-  // Stop any previous movement from the last frame
-  // this.player.body.setVelocity(0);
+  this.player.body.setVelocity(0);
   // Horizontal movement
   if (this.input.keyboard.checkDown(left, 0)) {
     this.player.body.setVelocityX(-200);
@@ -188,7 +196,7 @@ function update() {
       // };
 
       //creating explosion animation
-      let bombPower = 50;
+      let bombPower = 1;
       for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
         this.explosion = this.physics.add
           .sprite(bomb.x + blastLength * 64, bomb.y, "fire")
@@ -196,55 +204,81 @@ function update() {
           .setSize(64, 64);
         this.explosion.play("fire", true);
         let explosion = this.explosion;
+        // console.log(
+        //   this.map.findTile(
+        //     tile =>
+        //       tile.x === this.map.worldToTileX(explosion.x) &&
+        //       tile.y === this.map.worldToTileY(explosion.y)
+        //   ).index
+        // );
+        // if (
+        //   this.map.findTile(
+        //     tile =>
+        //       tile.x === this.map.worldToTileX(explosion.x) &&
+        //       tile.y === this.map.worldToTileY(explosion.y)
+        //   ).index === 41 ||
+        //   this.map.findTile(
+        //     tile =>
+        //       tile.x === this.map.worldToTileX(explosion.x) &&
+        //       tile.y === this.map.worldToTileY(explosion.y)
+        //   ).index == -1
+        // ) {
+        //   console.log("hit");
+        //   return;
+        // }
+        // console.log("nohit");
         this.explosion.once(
           Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
           () => {
             explosion.destroy();
           }
         );
+        this.physics.add.overlap(explosion, this.player, () => {
+          console.log("hit");
+        });
       }
-      for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
-        this.explosion = this.physics.add
-          .sprite(bomb.x, bomb.y + blastLength * 64, "fire")
-          .setImmovable()
-          .setSize(64, 64);
-        this.explosion.play("fire", true);
-        let explosion = this.explosion;
-        this.explosion.once(
-          Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
-          () => {
-            explosion.destroy();
-          }
-        );
-      }
-      for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
-        this.explosion = this.physics.add
-          .sprite(bomb.x - blastLength * 64, bomb.y, "fire")
-          .setImmovable()
-          .setSize(64, 64);
-        this.explosion.play("fire", true);
-        let explosion = this.explosion;
-        this.explosion.once(
-          Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
-          () => {
-            explosion.destroy();
-          }
-        );
-      }
-      for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
-        this.explosion = this.physics.add
-          .sprite(bomb.x, bomb.y - blastLength * 64, "fire")
-          .setImmovable()
-          .setSize(64, 64);
-        this.explosion.play("fire", true);
-        let explosion = this.explosion;
-        this.explosion.once(
-          Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
-          () => {
-            explosion.destroy();
-          }
-        );
-      }
+      // for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
+      //   this.explosion = this.physics.add
+      //     .sprite(bomb.x, bomb.y + blastLength * 64, "fire")
+      //     .setImmovable()
+      //     .setSize(64, 64);
+      //   this.explosion.play("fire", true);
+      //   let explosion = this.explosion;
+      //   this.explosion.once(
+      //     Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
+      //     () => {
+      //       explosion.destroy();
+      //     }
+      //   );
+      // }
+      // for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
+      //   this.explosion = this.physics.add
+      //     .sprite(bomb.x - blastLength * 64, bomb.y, "fire")
+      //     .setImmovable()
+      //     .setSize(64, 64);
+      //   this.explosion.play("fire", true);
+      //   let explosion = this.explosion;
+      //   this.explosion.once(
+      //     Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
+      //     () => {
+      //       explosion.destroy();
+      //     }
+      //   );
+      // }
+      // for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
+      //   this.explosion = this.physics.add
+      //     .sprite(bomb.x, bomb.y - blastLength * 64, "fire")
+      //     .setImmovable()
+      //     .setSize(64, 64);
+      //   this.explosion.play("fire", true);
+      //   let explosion = this.explosion;
+      //   this.explosion.once(
+      //     Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
+      //     () => {
+      //       explosion.destroy();
+      //     }
+      //   );
+      // }
     });
 
     this.physics.add.collider(this.player, this.bomb);
