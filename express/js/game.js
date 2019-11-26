@@ -149,6 +149,7 @@ const speed = 200;
 
 function update() {
   this.player.body.setVelocity(0);
+
   // Horizontal movement
   if (this.input.keyboard.checkDown(left, 0)) {
     this.player.body.setVelocityX(-200);
@@ -181,8 +182,8 @@ function update() {
         "bomb"
       )
       .setImmovable()
-      .setSize(64, 64)
-      .setOrigin(0.5, 0.5);
+      .setSize(64, 64);
+    // .setOrigin(0.5, 0.5);
 
     this.bomb.play("boom", true);
 
@@ -191,51 +192,31 @@ function update() {
     this.bomb.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
       bomb.destroy();
 
-      // const explosionRadius = (bombXY, bombPower) => {
-      //   return bombXY + bombPower;
-      // };
-
       //creating explosion animation
       let bombPower = 1;
       for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
         this.explosion = this.physics.add
           .sprite(bomb.x + blastLength * 64, bomb.y, "fire")
-          .setImmovable()
-          .setSize(64, 64);
+          .setImmovable();
         this.explosion.play("fire", true);
         let explosion = this.explosion;
-        // console.log(
-        //   this.map.findTile(
-        //     tile =>
-        //       tile.x === this.map.worldToTileX(explosion.x) &&
-        //       tile.y === this.map.worldToTileY(explosion.y)
-        //   ).index
-        // );
-        // if (
-        //   this.map.findTile(
-        //     tile =>
-        //       tile.x === this.map.worldToTileX(explosion.x) &&
-        //       tile.y === this.map.worldToTileY(explosion.y)
-        //   ).index === 41 ||
-        //   this.map.findTile(
-        //     tile =>
-        //       tile.x === this.map.worldToTileX(explosion.x) &&
-        //       tile.y === this.map.worldToTileY(explosion.y)
-        //   ).index == -1
-        // ) {
-        //   console.log("hit");
-        //   return;
-        // }
-        // console.log("nohit");
         this.explosion.once(
           Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
           () => {
             explosion.destroy();
           }
         );
-        this.physics.add.overlap(explosion, this.player, () => {
-          console.log("hit");
-        });
+
+        function checkOverlap(sprite, explosion) {
+          var boundsA = sprite.getBounds();
+          var boundsB = explosion.getBounds();
+          return Phaser.Geom.Rectangle.Overlaps(boundsA, boundsB);
+        }
+        for (chest of this.chest) {
+          if (checkOverlap(chest, explosion)) {
+            chest.destroy();
+          }
+        }
       }
       // for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
       //   this.explosion = this.physics.add
