@@ -159,27 +159,31 @@ function create() {
 }
 
 const speed = 200;
+
 function update() {
-  this.player.body.setVelocity(0);
+  //makes sure there is a player to execute movement
+  if (this.player.body) {
+    this.player.body.setVelocity(0);
 
-  // Horizontal movement
-  if (this.input.keyboard.checkDown(left, 0)) {
-    this.player.body.setVelocityX(-200);
-  } else if (this.input.keyboard.checkDown(right, 0)) {
-    this.player.body.setVelocityX(200);
+    // Horizontal movement
+    if (this.input.keyboard.checkDown(left, 0)) {
+      this.player.body.setVelocityX(-200);
+    } else if (this.input.keyboard.checkDown(right, 0)) {
+      this.player.body.setVelocityX(200);
+    }
+    // Vertical movement
+    if (this.input.keyboard.checkDown(up, 0)) {
+      this.player.body.setVelocityY(-200);
+    } else if (this.input.keyboard.checkDown(down, 0)) {
+      this.player.body.setVelocityY(200);
+    }
+
+    // Normalize and scale the velocity so that player can't move faster along a diagonal
+    this.player.body.velocity.normalize().scale(speed);
+
+    //makes sure players displays above bomb
+    this.player.depth = 1;
   }
-  // Vertical movement
-  if (this.input.keyboard.checkDown(up, 0)) {
-    this.player.body.setVelocityY(-200);
-  } else if (this.input.keyboard.checkDown(down, 0)) {
-    this.player.body.setVelocityY(200);
-  }
-
-  // Normalize and scale the velocity so that player can't move faster along a diagonal
-  this.player.body.velocity.normalize().scale(speed);
-
-  //makes sure players displays above bomb
-  this.player.depth = 1;
 
   //calculates the center of the tile player is standing on
   const calculateCenterTileXY = playerLocation => {
@@ -192,6 +196,7 @@ function update() {
       .setImmovable()
       .setSize(64, 64);
 
+    this.physics.add.collider(this.player, this.bomb);
     this.bomb.play("boom", true);
 
     let bomb = this.bomb;
@@ -228,6 +233,10 @@ function update() {
           const bombY = bomb.y + direction.y * blastLength * 64;
 
           let explosion = this.physics.add.sprite(bombX, bombY, "fire").setImmovable();
+
+          if (checkOverlap(this.player, explosion)) {
+            this.player.destroy();
+          }
           //break if explosion collides with walls
           if (checkOverlap(this.wallMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`], explosion)) {
             explosion.destroy();
@@ -251,7 +260,5 @@ function update() {
         }
       }
     });
-
-    this.physics.add.collider(this.player, this.bomb);
   }
 }
