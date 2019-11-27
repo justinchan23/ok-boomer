@@ -33,11 +33,13 @@ this.socket.on("dropBomb", data => {
     .setImmovable()
     .setSize(64, 64);
   // .setOrigin(0.5, 0.5);
+  this.physics.add.collider(this.player[data.playerId], this.bomb);
 
   this.bomb.play("boom", true);
 
   let bomb = this.bomb;
 
+  //destory bomb after detonation animations
   this.bomb.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
     bomb.destroy();
 
@@ -69,7 +71,10 @@ this.socket.on("dropBomb", data => {
         const bombY = bomb.y + direction.y * blastLength * 64;
 
         let explosion = this.physics.add.sprite(bombX, bombY, "fire").setImmovable();
-        console.log(this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`]);
+
+        if (checkOverlap(this.player[data.playerId], explosion)) {
+          this.player[data.playerId].destroy();
+        }
         //break if explosion collides with walls
         if (checkOverlap(this.wallMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`], explosion)) {
           explosion.destroy();
@@ -79,23 +84,20 @@ this.socket.on("dropBomb", data => {
         //plays explosion animation
         explosion.play("fire", true);
 
-        //checks for explosion-chest overlap and destorys chest
-        if (checkOverlap(this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`], explosion)) {
-          this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`].destroy();
-          delete this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`];
-          console.log(this.chestMap);
-          break;
-        }
-
         //clears the explosion after animation is complete
         explosion.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
           explosion.destroy();
         });
+
+        //checks for explosion-chest overlap and destorys chest
+        if (checkOverlap(this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`], explosion)) {
+          this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`].destroy();
+          delete this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`];
+          break;
+        }
       }
     }
   });
-
-  this.physics.add.collider(this.player, this.bomb);
 });
 
 this.socket.on("newPlayer", data => {
