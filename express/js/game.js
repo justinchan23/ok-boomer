@@ -156,8 +156,6 @@ function create() {
   this.socket.on("dropBomb", data => {
     console.log(data);
   });
-  console.log(this.blocksLayer);
-  // console.log(this.blocksLayer.getTileAt(1, 0));
 }
 
 const speed = 200;
@@ -193,12 +191,12 @@ function update() {
       .sprite(calculateCenterTileXY(this.player.x), calculateCenterTileXY(this.player.y), "bomb")
       .setImmovable()
       .setSize(64, 64);
-    // .setOrigin(0.5, 0.5);
 
     this.bomb.play("boom", true);
 
     let bomb = this.bomb;
 
+    //destory bomb after detonation animations
     this.bomb.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
       bomb.destroy();
 
@@ -230,7 +228,6 @@ function update() {
           const bombY = bomb.y + direction.y * blastLength * 64;
 
           let explosion = this.physics.add.sprite(bombX, bombY, "fire").setImmovable();
-          console.log(this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`]);
           //break if explosion collides with walls
           if (checkOverlap(this.wallMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`], explosion)) {
             explosion.destroy();
@@ -240,18 +237,17 @@ function update() {
           //plays explosion animation
           explosion.play("fire", true);
 
-          //checks for explosion-chest overlap and destorys chest
-          if (checkOverlap(this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`], explosion)) {
-            this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`].destroy();
-            delete this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`];
-            console.log(this.chestMap);
-            break;
-          }
-
           //clears the explosion after animation is complete
           explosion.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
             explosion.destroy();
           });
+
+          //checks for explosion-chest overlap and destorys chest
+          if (checkOverlap(this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`], explosion)) {
+            this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`].destroy();
+            delete this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`];
+            break;
+          }
         }
       }
     });
