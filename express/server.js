@@ -41,8 +41,8 @@ const spawnPoints = [
 
 const spawnPlayer = (spawnPoints, socketID) => {
   const res = (players[socketID] = {
-    x: spawnPoints[0][0],
-    y: spawnPoints[0][1],
+    spawnx: spawnPoints[0][0],
+    spawny: spawnPoints[0][1],
     playerId: socketID
   });
 
@@ -59,7 +59,7 @@ nspPlayers.on("connection", function(socket) {
 
   socket.on("disconnect", () => {
     console.log("someone disconnected ", socket.id);
-    spawnPoints.push([players[socket.id]["x"], players[socket.id]["y"]]);
+    spawnPoints.push([players[socket.id]["spawnx"], players[socket.id]["spawny"]]);
     delete players[socket.id];
     // emit a message to all players to remove this player
     nspGame.emit("disconnect", socket.id);
