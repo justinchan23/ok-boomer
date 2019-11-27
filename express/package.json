@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "go": "nodemon server.js"
+    "go": "nodemon --watch server.js"
   },
   "keywords": [],
   "dependencies": {

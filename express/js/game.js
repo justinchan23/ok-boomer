@@ -108,9 +108,6 @@ function create() {
     repeat: 0
   });
 
-  this.socket.on("allPlayers", data => {
-    console.log(data);
-  });
   const movePlayer = data => {
     if (data.move === "Left") {
       this.player[data.playerId].body.setVelocityX(-200);
@@ -156,12 +153,9 @@ function create() {
           .setSize(64, 64);
         this.explosion.play("fire", true);
         let explosion = this.explosion;
-        this.explosion.once(
-          Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
-          () => {
-            explosion.destroy();
-          }
-        );
+        this.explosion.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
+          explosion.destroy();
+        });
       }
       for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
         this.explosion = this.physics.add
@@ -170,12 +164,9 @@ function create() {
           .setSize(64, 64);
         this.explosion.play("fire", true);
         let explosion = this.explosion;
-        this.explosion.once(
-          Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
-          () => {
-            explosion.destroy();
-          }
-        );
+        this.explosion.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
+          explosion.destroy();
+        });
       }
       for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
         this.explosion = this.physics.add
@@ -184,12 +175,9 @@ function create() {
           .setSize(64, 64);
         this.explosion.play("fire", true);
         let explosion = this.explosion;
-        this.explosion.once(
-          Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
-          () => {
-            explosion.destroy();
-          }
-        );
+        this.explosion.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
+          explosion.destroy();
+        });
       }
       for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
         this.explosion = this.physics.add
@@ -198,12 +186,9 @@ function create() {
           .setSize(64, 64);
         this.explosion.play("fire", true);
         let explosion = this.explosion;
-        this.explosion.once(
-          Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
-          () => {
-            explosion.destroy();
-          }
-        );
+        this.explosion.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
+          explosion.destroy();
+        });
       }
     });
 
@@ -225,9 +210,13 @@ function create() {
 
   this.socket.on("newPlayer", data => {
     console.log(data);
-    this.player[data.playerId] = this.physics.add
-      .sprite(928, 96, "white")
-      .setSize(64, 64);
+    this.player[data.playerId] = this.physics.add.sprite(data.x, data.y, "white").setSize(64, 64);
+    this.player[data.playerId].setCollideWorldBounds(true);
+  });
+
+  this.socket.on("disconnect", data => {
+    console.log("player leaving");
+    this.player[data].destroy();
   });
 }
 

@@ -32,27 +32,37 @@ app.get("/api/data", (req, res) =>
 io.origins("*:*");
 
 const players = {};
-// const movePlayer = ;
+const spawnPoints = [
+  [96, 96],
+  [96, 928],
+  [928, 96],
+  [928, 928]
+];
 
+const spawnPlayer = (spawnPoints, socketID) => {
+  const res = (players[socketID] = {
+    x: spawnPoints[0][0],
+    y: spawnPoints[0][1],
+    playerId: socketID
+  });
+
+  spawnPoints.shift();
+  return res;
+};
 //player namespace
 const nspPlayers = io.of("/players");
-// console.log(nspPlayers);
 nspPlayers.on("connection", function(socket) {
   console.log("someone connected player side", socket.id);
 
   // create a new player and add it to our players object
-  players[socket.id] = {
-    flipX: false,
-    x: 96,
-    y: 96,
-    playerId: socket.id
-  };
+  spawnPlayer(spawnPoints, socket.id);
 
   socket.on("disconnect", () => {
     console.log("someone disconnected ", socket.id);
+    spawnPoints.push([players[socket.id]["x"], players[socket.id]["y"]]);
     delete players[socket.id];
     // emit a message to all players to remove this player
-    // io.emit("disconnect", socket.id);
+    nspGame.emit("disconnect", socket.id);
   });
 
   // update all other players of the new player
