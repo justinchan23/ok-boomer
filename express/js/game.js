@@ -34,11 +34,8 @@ function preload() {
 
   this.load.tilemapTiledJSON("map1", "assets/maps/map1.json");
   this.load.image("floor", "assets/maps/floor.png");
-  this.load.image("blocks", "assets/maps/blocks.png");
-  this.load.spritesheet("chest", "assets/maps/chests.png", {
-    frameWidth: 64,
-    frameHeight: 64
-  });
+  this.load.spritesheet("blocks", "assets/maps/blocks.png", { frameWidth: 64, frameHeight: 64 });
+  this.load.spritesheet("chest", "assets/maps/chests.png", { frameWidth: 64, frameHeight: 64 });
 
   this.load.spritesheet({
     key: "bomb",
@@ -70,19 +67,34 @@ function create() {
 
   this.map = this.add.tilemap("map1");
 
-  let blockSet = this.map.addTilesetImage("blocks", "blocks");
+  // let blockSet = this.map.addTilesetImage("blocks", "blocks");
   let floorSet = this.map.addTilesetImage("floor", "floor");
   // let chestSet = this.map.addTilesetImage("chests", "chests");
 
-  this.blocksLayer = this.map.createDynamicLayer("blocks", [
-    blockSet,
-    floorSet
-  ]);
-  this.blocksLayer.setCollisionByProperty({ collides: true });
+  this.blocksLayer = this.map.createStaticLayer("floor", floorSet);
+  // this.blocksLayer.setCollisionByProperty({ collides: true });
   // this.chestLayer = this.map.createDynamicLayer("chest", [chestSet], 0, 0);
 
   this.player = this.physics.add.sprite(96, 96, "white").setSize(64, 64);
   this.chest = this.map.createFromObjects("chest", 41, { key: "chest" });
+  this.wall = this.map.createFromObjects("chest", 1, { key: "blocks" });
+
+  this.chestMap = {};
+  for (let chest of this.chest) {
+    const x = chest.x / 64;
+    const y = chest.y / 64;
+
+    this.chestMap[`${x},${y}`] = chest;
+  }
+
+  this.wallMap = {};
+  for (let wall of this.wall) {
+    const x = (wall.x - 32) / 64;
+    const y = (wall.y - 32) / 64;
+
+    this.wallMap[`${x},${y}`] = wall;
+  }
+  console.log(this.wallMap);
 
   //collision for world bounds
   this.player.setCollideWorldBounds(true);
@@ -92,7 +104,12 @@ function create() {
   const chest = this.physics.add.group(this.chest);
   this.physics.world.enable(chest);
   this.physics.add.collider(this.player, chest);
-  this.chest.forEach(c => c.body.setImmovable(true));
+  this.chest.forEach(c => c.body.setSize(55, 55).setImmovable());
+
+  const wall = this.physics.add.group(this.wall);
+  this.physics.world.enable(wall);
+  this.physics.add.collider(this.player, wall);
+  this.wall.forEach(c => c.body.setSize(55, 55).setImmovable());
 
   up = this.input.keyboard.addKey("W");
   left = this.input.keyboard.addKey("A");
@@ -143,10 +160,11 @@ function create() {
   this.socket.on("dropBomb", data => {
     console.log(data);
   });
+  console.log(this.blocksLayer);
+  // console.log(this.blocksLayer.getTileAt(1, 0));
 }
 
 const speed = 200;
-
 function update() {
   this.player.body.setVelocity(0);
 
@@ -176,11 +194,7 @@ function update() {
   // Spawning Bomb
   if (this.input.keyboard.checkDown(space, 99999)) {
     this.bomb = this.physics.add
-      .sprite(
-        calculateCenterTileXY(this.player.x),
-        calculateCenterTileXY(this.player.y),
-        "bomb"
-      )
+      .sprite(calculateCenterTileXY(this.player.x), calculateCenterTileXY(this.player.y), "bomb")
       .setImmovable()
       .setSize(64, 64);
     // .setOrigin(0.5, 0.5);
@@ -192,9 +206,10 @@ function update() {
     this.bomb.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
       bomb.destroy();
 
-      //creating explosion animation
+      //bomb power level
       let bombPower = 2;
 
+      //directions for bombs to spread
       const explosionDirection = [
         { x: 0, y: 0 },
         { x: 0, y: -1 },
@@ -203,33 +218,50 @@ function update() {
         { x: -1, y: 0 }
       ];
 
+      //checks overlaps with game objects and explosions
+      function checkOverlap(gameObject, explosion) {
+        if (!gameObject) {
+          return false;
+        }
+        var boundsA = gameObject.getBounds();
+        var boundsB = explosion.getBounds();
+        return Phaser.Geom.Rectangle.Overlaps(boundsA, boundsB);
+      }
+
       for (const direction of explosionDirection) {
+        let hitChest = false;
         for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
-          this.explosion = this.physics.add
-            .sprite(
-              bomb.x + direction.x * blastLength * 64,
-              bomb.y + direction.y * blastLength * 64,
-              "fire"
-            )
-            .setImmovable();
-          this.explosion.play("fire", true);
-          let explosion = this.explosion;
-          this.explosion.once(
-            Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE,
-            () => {
-              explosion.destroy();
-            }
-          );
-          function checkOverlap(sprite, explosion) {
-            var boundsA = sprite.getBounds();
-            var boundsB = explosion.getBounds();
-            return Phaser.Geom.Rectangle.Overlaps(boundsA, boundsB);
+          //break if explosion hits chest
+          if (hitChest) {
+            break;
           }
-          for (chest of this.chest) {
+          const bombX = bomb.x + direction.x * blastLength * 64;
+          const bombY = bomb.y + direction.y * blastLength * 64;
+
+          let explosion = this.physics.add.sprite(bombX, bombY, "fire").setImmovable();
+
+          //break if explosion collides with walls
+          if (checkOverlap(this.wallMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`], explosion)) {
+            explosion.destroy();
+            break;
+          }
+
+          for (let chest of this.chest) {
             if (checkOverlap(chest, explosion)) {
               chest.destroy();
+              this.chest = this.chest.filter(c => {
+                return chest !== c;
+              });
+              hitChest = true;
+              break;
             }
           }
+
+          //plays explosion animation
+          explosion.play("fire", true);
+          explosion.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
+            explosion.destroy();
+          });
         }
       }
     });
