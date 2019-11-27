@@ -59,6 +59,11 @@ function preload() {
   });
 }
 
+//calculates the center of the tile player is standing on
+const calculateCenterTileXY = playerLocation => {
+  return 32 - (playerLocation % 64) + playerLocation;
+};
+
 function create() {
   this.socket = io("/game");
   const music = this.sound.add("gamemusic");
@@ -152,9 +157,9 @@ function create() {
     this.player[data.playerId].body.setVelocity(0);
   });
 
-  if (this.player[data.playerId].body) {
-    this.socket.on("dropBomb", data => {
-      console.log(data);
+  this.socket.on("dropBomb", data => {
+    console.log(data);
+    if (this.player[data.playerId].body) {
       this.bomb = this.physics.add
         .sprite(
           calculateCenterTileXY(this.player[data.playerId].x),
@@ -229,8 +234,8 @@ function create() {
           }
         }
       });
-    });
-  }
+    }
+  });
 
   this.socket.on("newPlayer", data => {
     console.log(data);
