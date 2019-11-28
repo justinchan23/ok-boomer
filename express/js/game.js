@@ -91,6 +91,7 @@ function create() {
   this.physics.add.collider(this.player, wall);
   this.wall.forEach(c => c.body.setSize(55, 55).setImmovable());
 
+  //hash maps
   this.chestMap = {};
   for (let chest of this.chest) {
     const x = (chest.x - 32) / 64;
@@ -100,13 +101,13 @@ function create() {
   }
   console.log(this.chestMap);
 
-  // this.wallMap = {};
-  // for (let wall of this.wall) {
-  //   const x = (wall.x - 32) / 64;
-  //   const y = (wall.y - 32) / 64;
+  this.wallMap = {};
+  for (let wall of this.wall) {
+    const x = (wall.x - 32) / 64;
+    const y = (wall.y - 32) / 64;
 
-  //   this.wallMap[`${x},${y}`] = wall;
-  // }
+    this.wallMap[`${x},${y}`] = wall;
+  }
 
   this.bombMap = {};
   const bombLocation = (bombX, bombY) => {
@@ -157,7 +158,7 @@ function create() {
   };
 
   this.socket.on("playerMovement", data => {
-    console.log(data);
+    // console.log(data);
     movePlayer(data);
   });
 
@@ -166,9 +167,19 @@ function create() {
     this.player[data.playerId].body.setVelocity(0);
   });
 
+  const isBombOnXY = (x, y) => {
+    this.bombMap[`${x},${y}`];
+  };
+
   this.socket.on("dropBomb", data => {
-    console.log(data);
-    if (this.player[data.playerId].body && this.player[data.playerId].bombCount > 0) {
+    if (
+      this.player[data.playerId].body &&
+      this.player[data.playerId].bombCount > 0 &&
+      !isBombOnXY(
+        calculateCenterTileXY(this.player[data.playerId].x),
+        calculateCenterTileXY(this.player[data.playerId].y)
+      )
+    ) {
       this.bomb = this.physics.add
         .sprite(
           calculateCenterTileXY(this.player[data.playerId].x),
@@ -177,10 +188,10 @@ function create() {
         )
         .setImmovable()
         .setSize(64, 64);
-      // bombLocation(this.bomb.x, this.bomb.y);
-      // console.log(this.bombMap);
+      bombLocation(this.bomb.x, this.bomb.y);
+
       this.player[data.playerId].bombCount = 0;
-      // .setOrigin(0.5, 0.5);
+
       this.physics.add.collider(this.player[data.playerId], this.bomb);
 
       this.bomb.play("boom", true);
@@ -189,6 +200,7 @@ function create() {
 
       //destory bomb after detonation animations
       this.bomb.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
+        delete this.bombMap[`${(bomb.x - 32) / 64},${(bomb.y - 32) / 64}`];
         bomb.destroy();
         this.player[data.playerId].bombCount++;
         //bomb power level
@@ -253,12 +265,10 @@ function create() {
   });
 
   this.socket.on("newPlayer", data => {
-    console.log(data);
     players.push(data.playerId);
     this.player[data.playerId] = this.physics.add.sprite(data.spawnx, data.spawny, "white").setSize(64, 64);
     // this.player[data.playerId] =
-    this.player[data.playerId]["bombCount"] = 1;
-    console.log(this.player);
+    this.player[data.playerId]["bombCount"] = 3;
     this.player[data.playerId].setCollideWorldBounds(true);
     this.player[data.playerId].depth = 1;
 
