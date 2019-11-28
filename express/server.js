@@ -33,20 +33,28 @@ io.origins("*:*");
 
 const players = {};
 const spawnPoints = [
-  [96, 96],
-  [96, 928],
-  [928, 96],
-  [928, 928]
+  [96, 96, "white"],
+  [96, 928, "blue"],
+  [928, 96, "black"],
+  [928, 928, "red"]
 ];
 
 const spawnPlayer = (spawnPoints, socketID) => {
-  const res = (players[socketID] = {
-    spawnx: spawnPoints[0][0],
-    spawny: spawnPoints[0][1],
-    playerId: socketID
-  });
+  console.log(socketID);
+  let res;
+  if (spawnPoints.length === 0) {
+    nspPlayers.to(socketID).emit("lobbyFull", "Lobby Full");
+  } else {
+    res = players[socketID] = {
+      spawnx: spawnPoints[0][0],
+      spawny: spawnPoints[0][1],
+      color: spawnPoints[0][2],
+      playerId: socketID
+    };
+    nspPlayers.to(socketID).emit("changeColor", spawnPoints[0][2]);
+    spawnPoints.shift();
+  }
 
-  spawnPoints.shift();
   return res;
 };
 //player namespace
@@ -59,7 +67,8 @@ nspPlayers.on("connection", function(socket) {
 
   socket.on("disconnect", () => {
     console.log("someone disconnected ", socket.id);
-    spawnPoints.push([players[socket.id]["spawnx"], players[socket.id]["spawny"]]);
+    console.log(spawnPoints);
+    spawnPoints.push([players[socket.id]["spawnx"], players[socket.id]["spawny"], players[socket.id]["color"]]);
     delete players[socket.id];
     // emit a message to all players to remove this player
     nspGame.emit("disconnect", socket.id);

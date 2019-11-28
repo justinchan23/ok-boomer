@@ -1,14 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "./Button";
 import "./App.css";
 import "./Dpad.css";
 import io from "socket.io-client";
 
-let socketClient = io("http://192.168.88.61:3001/players");
+let socketClient = io("http://192.168.88.210:3001/players");
 
 export default function Default(props) {
+  const [state, setState] = useState("");
+  const [color, setColor] = useState("");
+
+  socketClient.on("changeColor", data => {
+    setColor(data);
+  });
   return (
-    <div>
+    <div id={color}>
       <div class="bombDiv">
         <Button
           bomb
@@ -20,7 +26,7 @@ export default function Default(props) {
           }}
         ></Button>
       </div>
-      <div class="dpad">
+      <div class="dpad" id={color}>
         <div class="UpOnly">
           <Button
             id="right"
