@@ -24,7 +24,7 @@
 }
 
 .bombDiv {
-  height: 50%;
+  height: 40%;
   width: 100%;
   top: 0;
   display: flex;
@@ -38,7 +38,7 @@
 
 .dpad {
   width: 100%;
-  height: 50%;
+  height: 60%;
   bottom: 0;
   position: absolute;
   display: flex;

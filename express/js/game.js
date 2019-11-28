@@ -14,6 +14,7 @@ const config = {
   }
 };
 
+const players = [];
 const game = new Phaser.Game(config);
 
 let up;
@@ -123,7 +124,7 @@ function create() {
     key: "boom",
     frames: this.anims.generateFrameNumbers("bomb", { start: 0, end: 1 }),
     frameRate: 3,
-    repeat: 2
+    repeat: 3
   });
 
   //explosion animation
@@ -208,9 +209,12 @@ function create() {
 
             let explosion = this.physics.add.sprite(bombX, bombY, "fire").setImmovable();
 
-            if (checkOverlap(this.player[data.playerId], explosion)) {
-              this.player[data.playerId].destroy();
+            for (const player of players) {
+              if (checkOverlap(this.player[player], explosion)) {
+                this.player[player].destroy();
+              }
             }
+
             //break if explosion collides with walls
             if (checkOverlap(this.wallMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`], explosion)) {
               explosion.destroy();
@@ -239,6 +243,7 @@ function create() {
 
   this.socket.on("newPlayer", data => {
     console.log(data);
+    players.push(data.playerId);
     this.player[data.playerId] = this.physics.add.sprite(data.spawnx, data.spawny, "white").setSize(64, 64);
     this.player[data.playerId].setCollideWorldBounds(true);
     this.player[data.playerId].depth = 1;
