@@ -100,13 +100,21 @@ function create() {
   }
   console.log(this.chestMap);
 
-  this.wallMap = {};
-  for (let wall of this.wall) {
-    const x = (wall.x - 32) / 64;
-    const y = (wall.y - 32) / 64;
+  // this.wallMap = {};
+  // for (let wall of this.wall) {
+  //   const x = (wall.x - 32) / 64;
+  //   const y = (wall.y - 32) / 64;
 
-    this.wallMap[`${x},${y}`] = wall;
-  }
+  //   this.wallMap[`${x},${y}`] = wall;
+  // }
+
+  this.bombMap = {};
+  const bombLocation = (bombX, bombY) => {
+    const x = (bombX - 32) / 64;
+    const y = (bombY - 32) / 64;
+
+    this.bombMap[`${x},${y}`] = true;
+  };
 
   //collision for world bounds
   this.player.setCollideWorldBounds(true);
@@ -169,6 +177,8 @@ function create() {
         )
         .setImmovable()
         .setSize(64, 64);
+      // bombLocation(this.bomb.x, this.bomb.y);
+      // console.log(this.bombMap);
       this.player[data.playerId].bombCount = 0;
       // .setOrigin(0.5, 0.5);
       this.physics.add.collider(this.player[data.playerId], this.bomb);
