@@ -181,10 +181,6 @@ function create() {
   };
 
   this.socket.on("playerMovement", data => {
-<<<<<<< HEAD
-=======
-    // console.log(data);
->>>>>>> 0317fc5ee33db15b2e289a2af5a4cd0848e58460
     movePlayer(data);
   });
 
