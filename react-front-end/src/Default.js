@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import Button from "./Button";
 import "./App.css";
@@ -8,9 +9,7 @@ import ReactNipple from "react-nipple";
 let socketClient = io("http://192.168.88.210:3001/players");
 
 export default function Default(props) {
-  const [state, setState] = useState("");
   const [colorId, setColorId] = useState("");
-  const [angle, setAngle] = useState(0);
   const [data, setData] = useState(undefined);
   socketClient.on("changeColor", data => {
     setColorId(data);

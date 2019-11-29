@@ -1,12 +1,10 @@
 .button--Arrow {
-  background: url("vtl_lever_left_off.png");
   height: 100px;
   width: 100px;
   border: none;
   opacity: 1;
   outline: none;
   bottom: 0;
-  background-repeat: no-repeat;
   background-position: center;
   padding: 60px;
 }
