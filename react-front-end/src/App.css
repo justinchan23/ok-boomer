@@ -70,3 +70,16 @@
   align-content: space-between;
   justify-content: center;
 }
+
+#white {
+  background-color: blanchedalmond;
+}
+#blue {
+  background-color: #4287f5;
+}
+#red {
+  background-color: #ff4221;
+}
+#black {
+  background-color: #211b1a;
+}
