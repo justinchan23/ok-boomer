@@ -258,6 +258,7 @@ function create() {
             for (const player of players) {
               if (checkOverlap(this.player[player], explosion)) {
                 this.player[player].destroy();
+                this.socket.emit("playerDied", player);
               }
             }
 

@@ -82,9 +82,9 @@ nspPlayers.on("connection", function(socket) {
   const emitPlayerMove = data => {
     nspGame.emit("playerMovement", data);
   };
-
   socket.on("playerMovement", data => {
     console.log("movingPlayer", data);
+
     emitPlayerMove(data);
   });
   socket.on("playerMovementEnd", data => {
@@ -104,6 +104,9 @@ nspGame.on("connection", function(socket) {
   console.log("someone connected game side ", socket.id);
   socket.on("disconnect", () => {
     console.log("someone disconnected", socket.id);
+  });
+  socket.on("playerDied", data => {
+    nspPlayers.to(data).emit("playerDied", true);
   });
 });
 
