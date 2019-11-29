@@ -16,6 +16,7 @@ const config = {
 
 const players = [];
 const game = new Phaser.Game(config);
+let bombCountGroup;
 
 let up;
 let left;
@@ -96,18 +97,11 @@ function create() {
   this.physics.add.collider(this.player, wall);
   this.wall.forEach(c => c.body.setSize(55, 55).setImmovable());
 
-  this.bombCountPowerup = this.physics.add.staticGroup();
+  bombCountGroup = this.physics.add.group();
 
-  const bombCountPowerup = (player, powerup) => {
-    console.log("yes");
-    this.bombCountPowerup.killAndHide(powerup);
-    powerup.body.enable = false;
-    player.bombCount++;
-  };
-
-  for (player of players) {
-    this.physics.add.overlap(player, this.bombCountPowerup, bombCountPowerup);
-  }
+  // const createBombCountPowerup = (x, y) => {
+  //   let z = bombCountPowerup.add(this.physics.add.sprite(x, y, "bombCountIncrease").setSize(64, 64));
+  // };
 
   //hash maps
   this.chestMap = {};
@@ -117,7 +111,6 @@ function create() {
 
     this.chestMap[`${x},${y}`] = chest;
   }
-  console.log(this.chestMap);
 
   this.wallMap = {};
   for (let wall of this.wall) {
@@ -204,12 +197,11 @@ function create() {
 
   // Stop any previous movement from the last frame
   this.socket.on("playerMovementEnd", data => {
-    console.log(data);
     this.player[data.playerId].body.setVelocity(0);
   });
 
   const isBombOnXY = (x, y) => {
-    this.bombMap[`${x},${y}`];
+    return `${x},${y}` in this.bombMap;
   };
 
   //checks overlaps with game objects
@@ -227,8 +219,8 @@ function create() {
       this.player[data.playerId].body &&
       this.player[data.playerId].bombCount > 0 &&
       !isBombOnXY(
-        calculateCenterTileXY(this.player[data.playerId].x),
-        calculateCenterTileXY(this.player[data.playerId].y)
+        (calculateCenterTileXY(this.player[data.playerId].x) - 32) / 64,
+        (calculateCenterTileXY(this.player[data.playerId].y) - 32) / 64
       )
     ) {
       this.bomb = this.physics.add
@@ -241,7 +233,7 @@ function create() {
         .setSize(64, 64);
       bombLocation(this.bomb.x, this.bomb.y);
 
-      this.player[data.playerId].bombCount = 0;
+      this.player[data.playerId].bombCount--;
 
       this.physics.add.collider(this.player[data.playerId], this.bomb);
 
@@ -296,11 +288,11 @@ function create() {
             if (checkOverlap(this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`], explosion)) {
               this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`].destroy();
               delete this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`];
-
-              this.bombCountPowerup.add(
-                this.physics.add.image(explosion.x, explosion.y, "bombCountIncrease").setSize(64, 64)
+              bombCountGroup.add(
+                this.physics.add.sprite(explosion.x, explosion.y, "bombCountIncrease").setSize(64, 64)
               );
 
+              // createBombCountPowerup(explosion.x, explosion.y);
               break;
             }
           }
@@ -308,29 +300,15 @@ function create() {
       });
     }
   });
-
-  // if (this.speedPowerup.getChildren()) {
-  //   for (const player of players) {
-  //     this.speedPowerup.getChildren().forEach(each => {
-  //       console.log(each);
-  //     });
-  //  {
-  //     console.log(speedPowerup);
-  //     // this.physics.add.overlap(this.player[player], speedPowerup, console.log("yes"));
-  //     // console.log(speedPowerup);
-  //     if (checkOverlap(player, this.speedPowerup[speedPowerup])) {
-  //       console.log("yes");
-  //       speedPowerup.destroy();
-  //     }
-  //     //   }
-  //   }
-  // }
-
   this.socket.on("newPlayer", data => {
     players.push(data.playerId);
     this.player[data.playerId] = this.physics.add.sprite(data.spawnx, data.spawny, "white").setSize(64, 64);
-    // this.player[data.playerId] =
-    this.player[data.playerId]["bombCount"] = 3;
+
+    this.player[data.playerId]["bombCount"] = 1;
+    this.player[data.playerId]["speed"] = 200;
+    this.player[data.playerId]["bombPower"] = 1;
+    console.log(this.player);
+
     this.player[data.playerId].setCollideWorldBounds(true);
     this.player[data.playerId].depth = 1;
 
@@ -339,7 +317,6 @@ function create() {
   });
 
   this.socket.on("disconnect", data => {
-    console.log("player leaving");
     this.player[data].destroy();
   });
 }
@@ -347,6 +324,13 @@ function create() {
 const speed = 200;
 
 function update() {
+  for (let player of players) {
+    const increaseBombCount = (player, bombCountPowerup) => {
+      player.bombCount = player.bombCount + 1;
+      bombCountPowerup.destroy();
+    };
+    this.physics.overlap(this.player[player], bombCountGroup, increaseBombCount, null, this);
+  }
   //makes sure there is a player to execute movement
   if (this.player.body) {
     this.player.body.setVelocity(0);
