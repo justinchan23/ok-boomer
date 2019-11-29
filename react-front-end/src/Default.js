@@ -4,7 +4,7 @@ import "./App.css";
 import "./Dpad.css";
 import io from "socket.io-client";
 
-let socketClient = io("http://192.168.88.194:3001/players");
+let socketClient = io("http://192.168.88.238:3001/players");
 
 export default function Default(props) {
   return (

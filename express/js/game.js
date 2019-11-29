@@ -58,6 +58,11 @@ function preload() {
       endFrame: 16
     }
   });
+
+  //powerups
+  this.load.image("movementIncrease", "assets/powerups/movementincrease.png");
+  this.load.image("bombCountIncrease", "assets/powerups/bombincrease.png");
+  this.load.image("bombPowerIncrease", "assets/powerups/bombpowerincrease.png");
 }
 
 //calculates the center of the tile player is standing on
@@ -90,6 +95,19 @@ function create() {
   this.physics.world.enable(wall);
   this.physics.add.collider(this.player, wall);
   this.wall.forEach(c => c.body.setSize(55, 55).setImmovable());
+
+  this.bombCountPowerup = this.physics.add.staticGroup();
+
+  const bombCountPowerup = (player, powerup) => {
+    console.log("yes");
+    this.bombCountPowerup.killAndHide(powerup);
+    powerup.body.enable = false;
+    player.bombCount++;
+  };
+
+  for (player of players) {
+    this.physics.add.overlap(player, this.bombCountPowerup, bombCountPowerup);
+  }
 
   //hash maps
   this.chestMap = {};
@@ -171,6 +189,16 @@ function create() {
     this.bombMap[`${x},${y}`];
   };
 
+  //checks overlaps with game objects
+  function checkOverlap(gameObjectOne, gameObjectTwo) {
+    if (!gameObjectOne) {
+      return false;
+    }
+    var boundsA = gameObjectOne.getBounds();
+    var boundsB = gameObjectTwo.getBounds();
+    return Phaser.Geom.Rectangle.Overlaps(boundsA, boundsB);
+  }
+
   this.socket.on("dropBomb", data => {
     if (
       this.player[data.playerId].body &&
@@ -215,16 +243,6 @@ function create() {
           { x: -1, y: 0 }
         ];
 
-        //checks overlaps with game objects and explosions
-        function checkOverlap(gameObject, explosion) {
-          if (!gameObject) {
-            return false;
-          }
-          var boundsA = gameObject.getBounds();
-          var boundsB = explosion.getBounds();
-          return Phaser.Geom.Rectangle.Overlaps(boundsA, boundsB);
-        }
-
         for (const direction of explosionDirection) {
           for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
             const bombX = bomb.x + direction.x * blastLength * 64;
@@ -237,7 +255,6 @@ function create() {
                 this.player[player].destroy();
               }
             }
-
             //break if explosion collides with walls
             if (checkOverlap(this.wallMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`], explosion)) {
               explosion.destroy();
@@ -256,6 +273,11 @@ function create() {
             if (checkOverlap(this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`], explosion)) {
               this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`].destroy();
               delete this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`];
+
+              this.bombCountPowerup.add(
+                this.physics.add.image(explosion.x, explosion.y, "bombCountIncrease").setSize(64, 64)
+              );
+
               break;
             }
           }
@@ -263,6 +285,23 @@ function create() {
       });
     }
   });
+
+  // if (this.speedPowerup.getChildren()) {
+  //   for (const player of players) {
+  //     this.speedPowerup.getChildren().forEach(each => {
+  //       console.log(each);
+  //     });
+  //  {
+  //     console.log(speedPowerup);
+  //     // this.physics.add.overlap(this.player[player], speedPowerup, console.log("yes"));
+  //     // console.log(speedPowerup);
+  //     if (checkOverlap(player, this.speedPowerup[speedPowerup])) {
+  //       console.log("yes");
+  //       speedPowerup.destroy();
+  //     }
+  //     //   }
+  //   }
+  // }
 
   this.socket.on("newPlayer", data => {
     players.push(data.playerId);
