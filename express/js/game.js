@@ -135,26 +135,61 @@ function create() {
     repeat: 0
   });
   const movePlayer = data => {
-    if (data.move === "Left") {
-      this.player[data.playerId].body.setVelocityX(-200);
-    } else if (data.move === "Right") {
+    // if (data.move === "Left") {
+    // this.player[data.playerId].body.setVelocityX(-200);
+    // } else if (data.move === "Right") {
+    //   this.player[data.playerId].body.setVelocityX(200);
+    // } else if (data.move === "Up") {
+    // this.player[data.playerId].body.setVelocityY(-200);
+    // } else if (data.move === "Down") {
+    //   this.player[data.playerId].body.setVelocityY(200);
+    // }
+
+    // this.player[data.playerId].body.velocity.normalize().scale(speed);
+    console.log(data);
+    //down
+    if ((data.angle >= 0 && data.angle < 22.5) || (data.angle < 359 && data.angle > 337.5)) {
+      this.player[data.playerId].body.setVelocityY(200);
+      //right/down
+    } else if (data.angle >= 22.5 && data.angle < 67.5) {
       this.player[data.playerId].body.setVelocityX(200);
-    } else if (data.move === "Up") {
+      this.player[data.playerId].body.setVelocityY(200);
+
+      //right
+    } else if (data.angle >= 67.5 && data.angle < 112.5) {
+      this.player[data.playerId].body.setVelocityX(200);
+      //right/up
+    } else if (data.angle >= 112.5 && data.angle < 157.5) {
+      this.player[data.playerId].body.setVelocityX(200);
       this.player[data.playerId].body.setVelocityY(-200);
-    } else if (data.move === "Down") {
+
+      //up
+    } else if (data.angle >= 157.5 && data.angle < 202.5) {
+      this.player[data.playerId].body.setVelocityY(-200);
+
+      //up/left
+    } else if (data.angle >= 202.5 && data.angle < 247.5) {
+      this.player[data.playerId].body.setVelocityX(-200);
+      this.player[data.playerId].body.setVelocityY(-200);
+
+      //left
+    } else if (data.angle >= 247.5 && data.angle < 292.5) {
+      this.player[data.playerId].body.setVelocityX(-200);
+
+      //down/left
+    } else if (data.angle >= 292.5 && data.angle < 337.5) {
+      this.player[data.playerId].body.setVelocityX(-200);
       this.player[data.playerId].body.setVelocityY(200);
     }
-
-    this.player[data.playerId].body.velocity.normalize().scale(speed);
   };
 
   this.socket.on("playerMovement", data => {
-    console.log(data);
     movePlayer(data);
   });
 
   // Stop any previous movement from the last frame
   this.socket.on("playerMovementEnd", data => {
+    console.log(data);
     this.player[data.playerId].body.setVelocity(0);
   });
 

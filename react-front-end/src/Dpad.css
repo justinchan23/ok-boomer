@@ -3,31 +3,10 @@
   height: 100px;
   width: 100px;
   border: none;
-  opacity: 75%;
+  opacity: 1;
   outline: none;
   bottom: 0;
   background-repeat: no-repeat;
   background-position: center;
   padding: 60px;
-}
-#left {
-  transform: rotate(90deg);
-  margin-left: 15px;
-}
-#right {
-  transform: rotate(-90deg);
-  margin-left: 15px;
-}
-#up {
-  transform: rotate(-180deg);
-  margin-left: 15px;
-}
-
-#down {
-  margin-left: 15px;
-}
-
-.button--Arrow:active {
-  opacity: 1;
-  outline: none;
 }

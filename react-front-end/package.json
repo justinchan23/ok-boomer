@@ -5,8 +5,10 @@
   "dependencies": {
     "axios": "^0.18.0",
     "classnames": "^2.2.6",
+    "nipplejs": "^0.8.4",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-nipple": "^1.0.1",
     "react-scripts": "2.1.8",
     "socket.io-client": "^2.3.0"
   },

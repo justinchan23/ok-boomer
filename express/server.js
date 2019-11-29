@@ -82,17 +82,14 @@ nspPlayers.on("connection", function(socket) {
   const emitPlayerMove = data => {
     nspGame.emit("playerMovement", data);
   };
-  let interval;
 
   socket.on("playerMovement", data => {
-    console.log("movingPlayer");
-    clearInterval(interval);
-    interval = setInterval(emitPlayerMove, 100, data);
+    console.log("movingPlayer", data);
+    emitPlayerMove(data);
   });
   socket.on("playerMovementEnd", data => {
     console.log("movingPlayerEnd");
     nspGame.emit("playerMovementEnd", data);
-    clearInterval(interval);
   });
 
   socket.on("dropBomb", data => {
