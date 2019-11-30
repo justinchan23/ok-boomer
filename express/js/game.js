@@ -1,7 +1,7 @@
 /* eslint-disable func-style */
 const config = {
   type: Phaser.AUTO,
-  width: 1500,
+  width: 1024,
   height: 1024,
   physics: {
     default: "arcade",
