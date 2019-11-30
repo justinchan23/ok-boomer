@@ -55,7 +55,7 @@ export default function Default(props) {
             position: { top: "60%", left: "50%", height: "100%", width: "100%" }
           }}
           style={{
-            // outline: `1px dashed black`,
+            outline: `1px dashed grey`,
             color: "black"
           }}
           onMove={(evt, data) => {

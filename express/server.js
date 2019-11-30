@@ -23,12 +23,6 @@ app.use("/assets", express.static(__dirname + "/assets"));
 app.get("/", function(req, res) {
   res.sendFile(__dirname + "/index.html");
 });
-
-app.get("/api/data", (req, res) =>
-  res.json({
-    message: "Seems to work!"
-  })
-);
 io.origins("*:*");
 
 const players = {};
@@ -40,7 +34,6 @@ const spawnPoints = [
 ];
 
 const spawnPlayer = (spawnPoints, socketID) => {
-  console.log(socketID);
   let res;
   if (spawnPoints.length === 0) {
     nspPlayers.to(socketID).emit("lobbyFull", "Lobby Full");
@@ -67,7 +60,6 @@ nspPlayers.on("connection", function(socket) {
 
   socket.on("disconnect", () => {
     console.log("someone disconnected ", socket.id);
-    console.log(spawnPoints);
     spawnPoints.push([players[socket.id]["spawnx"], players[socket.id]["spawny"], players[socket.id]["color"]]);
     delete players[socket.id];
     // emit a message to all players to remove this player

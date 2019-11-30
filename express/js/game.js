@@ -1,7 +1,7 @@
 /* eslint-disable func-style */
 const config = {
   type: Phaser.AUTO,
-  width: 1500,
+  width: 1024,
   height: 1024,
   physics: {
     default: "arcade",
@@ -151,7 +151,6 @@ function create() {
     } else if (data.angle >= 22.5 && data.angle < 67.5) {
       this.player[data.playerId].body.setVelocityX(200);
       this.player[data.playerId].body.setVelocityY(200);
-
       //right
     } else if (data.angle >= 67.5 && data.angle < 112.5) {
       this.player[data.playerId].body.setVelocityX(200);
@@ -159,20 +158,16 @@ function create() {
     } else if (data.angle >= 112.5 && data.angle < 157.5) {
       this.player[data.playerId].body.setVelocityX(200);
       this.player[data.playerId].body.setVelocityY(-200);
-
       //up
     } else if (data.angle >= 157.5 && data.angle < 202.5) {
       this.player[data.playerId].body.setVelocityY(-200);
-
       //up/left
     } else if (data.angle >= 202.5 && data.angle < 247.5) {
       this.player[data.playerId].body.setVelocityX(-200);
       this.player[data.playerId].body.setVelocityY(-200);
-
       //left
     } else if (data.angle >= 247.5 && data.angle < 292.5) {
       this.player[data.playerId].body.setVelocityX(-200);
-
       //down/left
     } else if (data.angle >= 292.5 && data.angle < 337.5) {
       this.player[data.playerId].body.setVelocityX(-200);
