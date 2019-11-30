@@ -308,13 +308,23 @@ function create() {
             if (checkOverlap(this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`], explosion)) {
               this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`].destroy();
               delete this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`];
-              // bombCountGroup.add(this.physics.add.sprite(explosion.x, explosion.y, "bombCountIncrease").setSize(64, 64));
-              // movementSpeedGroup.add(
-              //   this.physics.add.sprite(explosion.x, explosion.y, "movementSpeedIncrease").setSize(64, 64)
-              // );
-              bombPowerGroup.add(
-                this.physics.add.sprite(explosion.x, explosion.y, "bombPowerIncrease").setSize(64, 64)
-              );
+              const generatePowerup = () => {
+                const number = Math.round(Math.random() * 10);
+                if (number === 1) {
+                  return bombCountGroup.add(
+                    this.physics.add.sprite(explosion.x, explosion.y, "bombCountIncrease").setSize(64, 64)
+                  );
+                } else if (number === 2) {
+                  return movementSpeedGroup.add(
+                    this.physics.add.sprite(explosion.x, explosion.y, "movementSpeedIncrease").setSize(64, 64)
+                  );
+                } else if (number === 3) {
+                  return bombPowerGroup.add(
+                    this.physics.add.sprite(explosion.x, explosion.y, "bombPowerIncrease").setSize(64, 64)
+                  );
+                } else return;
+              };
+              generatePowerup();
 
               // createBombCountPowerup(explosion.x, explosion.y);
               break;
