@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import Button from "./Button";
+import Result from "./Result";
 import "./App.css";
 import "./Dpad.css";
 import io from "socket.io-client";
@@ -11,8 +12,13 @@ let socketClient = io("http://192.168.88.231:3001/players");
 export default function Default(props) {
   const [colorId, setColorId] = useState("");
   const [data, setData] = useState(undefined);
+  const [lose, setLose] = useState(false);
+  const [winner, setWin] = useState(false);
   socketClient.on("changeColor", data => {
     setColorId(data);
+  });
+  socketClient.on("playerDied", data => {
+    setLose(data);
   });
 
   const playerMoving = angle => {
@@ -22,7 +28,11 @@ export default function Default(props) {
     });
   };
 
-  return (
+  return winner ? (
+    <Result id={"died"} name={"You Win!"}></Result>
+  ) : lose ? (
+    <Result id={"died"} name={"You Blew Up, Get Rekt"}></Result>
+  ) : (
     <div id={colorId}>
       <div class="bombDiv">
         <Button
@@ -41,7 +51,7 @@ export default function Default(props) {
           className="dpad"
           options={{
             mode: "dynamic",
-            color: "black",
+            color: "#03ecfc",
             position: { top: "60%", left: "50%", height: "100%", width: "100%" }
           }}
           style={{
