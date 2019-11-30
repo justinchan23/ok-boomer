@@ -25,6 +25,7 @@ let space;
 
 function preload() {
   this.load.image("white", "assets/characters/white.png");
+
   this.load.audio({
     key: "gamemusic",
     url: "assets/audio/music.mp3",
@@ -32,6 +33,8 @@ function preload() {
       loop: true
     }
   });
+
+  this.load.audio("bombExplosion", "assets/audio/explosionSound.mp3");
 
   this.load.tilemapTiledJSON("map1", "assets/maps/map1.json");
   this.load.image("floor", "assets/maps/floor.png");
@@ -67,9 +70,12 @@ const calculateCenterTileXY = playerLocation => {
 
 function create() {
   this.socket = io("/game");
+  //gameplay music
   const music = this.sound.add("gamemusic");
   music.loop = true;
   // music.play();
+
+  const explosionSound = this.sound.add("bombExplosion");
 
   this.map = this.add.tilemap("map1");
 
@@ -269,6 +275,7 @@ function create() {
 
             //plays explosion animation
             explosion.play("fire", true);
+            explosionSound.play();
 
             //clears the explosion after animation is complete
             explosion.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
