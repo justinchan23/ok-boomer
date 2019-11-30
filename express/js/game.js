@@ -17,6 +17,10 @@ const config = {
 const players = [];
 const game = new Phaser.Game(config);
 let bombCountGroup;
+let movementSpeedGroup;
+let bombPowerGroup;
+let bombCountSound;
+let msSound;
 
 let up;
 let left;
@@ -26,6 +30,9 @@ let space;
 
 function preload() {
   this.load.image("white", "assets/characters/white.png");
+  this.load.image("black", "assets/characters/black.png");
+  this.load.image("blue", "assets/characters/blue.png");
+  this.load.image("red", "assets/characters/red.png");
 
   this.load.audio({
     key: "gamemusic",
@@ -35,7 +42,9 @@ function preload() {
     }
   });
 
-  this.load.audio("bombExplosion", "assets/audio/explosionSound.mp3");
+  this.load.audio("bombExplosion", "assets/audio/explosionSound.wav");
+  this.load.audio("bombCountSound", "assets/audio/bombCountSound.wav");
+  this.load.audio("msSound", "assets/audio/msSound.wav");
 
   this.load.tilemapTiledJSON("map1", "assets/maps/map1.json");
   this.load.image("floor", "assets/maps/floor.png");
@@ -64,7 +73,7 @@ function preload() {
   });
 
   //powerups
-  this.load.image("movementIncrease", "assets/powerups/movementincrease.png");
+  this.load.image("movementSpeedIncrease", "assets/powerups/movementincrease.png");
   this.load.image("bombCountIncrease", "assets/powerups/bombincrease.png");
   this.load.image("bombPowerIncrease", "assets/powerups/bombpowerincrease.png");
 }
@@ -82,6 +91,8 @@ function create() {
   // music.play();
 
   const explosionSound = this.sound.add("bombExplosion");
+  bombCountSound = this.sound.add("bombCountSound");
+  msSound = this.sound.add("msSound");
 
   this.map = this.add.tilemap("map1");
 
@@ -104,6 +115,8 @@ function create() {
   this.wall.forEach(c => c.body.setSize(55, 55).setImmovable());
 
   bombCountGroup = this.physics.add.group();
+  movementSpeedGroup = this.physics.add.group();
+  bombPowerGroup = this.physics.add.group();
 
   // const createBombCountPowerup = (x, y) => {
   //   let z = bombCountPowerup.add(this.physics.add.sprite(x, y, "bombCountIncrease").setSize(64, 64));
@@ -163,37 +176,37 @@ function create() {
   const movePlayer = data => {
     //down
     if ((data.angle >= 0 && data.angle < 22.5) || (data.angle < 359 && data.angle > 337.5)) {
-      this.player[data.playerId].body.setVelocityY(200);
+      this.player[data.playerId].body.setVelocityY(this.player[data.playerId].speed);
       //right/down
     } else if (data.angle >= 22.5 && data.angle < 67.5) {
-      this.player[data.playerId].body.setVelocityX(200);
-      this.player[data.playerId].body.setVelocityY(200);
+      this.player[data.playerId].body.setVelocityX(this.player[data.playerId].speed);
+      this.player[data.playerId].body.setVelocityY(this.player[data.playerId].speed);
 
       //right
     } else if (data.angle >= 67.5 && data.angle < 112.5) {
-      this.player[data.playerId].body.setVelocityX(200);
+      this.player[data.playerId].body.setVelocityX(this.player[data.playerId].speed);
       //right/up
     } else if (data.angle >= 112.5 && data.angle < 157.5) {
-      this.player[data.playerId].body.setVelocityX(200);
-      this.player[data.playerId].body.setVelocityY(-200);
+      this.player[data.playerId].body.setVelocityX(this.player[data.playerId].speed);
+      this.player[data.playerId].body.setVelocityY(-this.player[data.playerId].speed);
 
       //up
     } else if (data.angle >= 157.5 && data.angle < 202.5) {
-      this.player[data.playerId].body.setVelocityY(-200);
+      this.player[data.playerId].body.setVelocityY(-this.player[data.playerId].speed);
 
       //up/left
     } else if (data.angle >= 202.5 && data.angle < 247.5) {
-      this.player[data.playerId].body.setVelocityX(-200);
-      this.player[data.playerId].body.setVelocityY(-200);
+      this.player[data.playerId].body.setVelocityX(-this.player[data.playerId].speed);
+      this.player[data.playerId].body.setVelocityY(-this.player[data.playerId].speed);
 
       //left
     } else if (data.angle >= 247.5 && data.angle < 292.5) {
-      this.player[data.playerId].body.setVelocityX(-200);
+      this.player[data.playerId].body.setVelocityX(-this.player[data.playerId].speed);
 
       //down/left
     } else if (data.angle >= 292.5 && data.angle < 337.5) {
-      this.player[data.playerId].body.setVelocityX(-200);
-      this.player[data.playerId].body.setVelocityY(200);
+      this.player[data.playerId].body.setVelocityX(-this.player[data.playerId].speed);
+      this.player[data.playerId].body.setVelocityY(this.player[data.playerId].speed);
     }
   };
 
@@ -253,7 +266,7 @@ function create() {
         bomb.destroy();
         this.player[data.playerId].bombCount++;
         //bomb power level
-        let bombPower = 2;
+        let bombPower = this.player[data.playerId].bombPower;
 
         //directions for bombs to spread
         const explosionDirection = [
@@ -295,8 +308,12 @@ function create() {
             if (checkOverlap(this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`], explosion)) {
               this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`].destroy();
               delete this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`];
-              bombCountGroup.add(
-                this.physics.add.sprite(explosion.x, explosion.y, "bombCountIncrease").setSize(64, 64)
+              // bombCountGroup.add(this.physics.add.sprite(explosion.x, explosion.y, "bombCountIncrease").setSize(64, 64));
+              // movementSpeedGroup.add(
+              //   this.physics.add.sprite(explosion.x, explosion.y, "movementSpeedIncrease").setSize(64, 64)
+              // );
+              bombPowerGroup.add(
+                this.physics.add.sprite(explosion.x, explosion.y, "bombPowerIncrease").setSize(64, 64)
               );
 
               // createBombCountPowerup(explosion.x, explosion.y);
@@ -309,7 +326,7 @@ function create() {
   });
   this.socket.on("newPlayer", data => {
     players.push(data.playerId);
-    this.player[data.playerId] = this.physics.add.sprite(data.spawnx, data.spawny, "white").setSize(64, 64);
+    this.player[data.playerId] = this.physics.add.sprite(data.spawnx, data.spawny, data.color).setSize(64, 64);
 
     this.player[data.playerId]["bombCount"] = 1;
     this.player[data.playerId]["speed"] = 200;
@@ -335,8 +352,25 @@ function update() {
     const increaseBombCount = (player, bombCountPowerup) => {
       player.bombCount = player.bombCount + 1;
       bombCountPowerup.destroy();
+      bombCountSound.play();
     };
     this.physics.overlap(this.player[player], bombCountGroup, increaseBombCount, null, this);
+
+    const increaseMovementSpeed = (player, movementSpeedPowerup) => {
+      player.speed = player.speed + 50;
+      console.log(player.speed);
+      movementSpeedPowerup.destroy();
+      msSound.play();
+    };
+    this.physics.overlap(this.player[player], movementSpeedGroup, increaseMovementSpeed, null, this);
+
+    const increaseBombPower = (player, bombPowerPowerup) => {
+      player.bombPower = player.bombPower + 1;
+      console.log(player.bombPower);
+      bombPowerPowerup.destroy();
+      bombCountSound.play();
+    };
+    this.physics.overlap(this.player[player], bombPowerGroup, increaseBombPower, null, this);
   }
   //makes sure there is a player to execute movement
   if (this.player.body) {
