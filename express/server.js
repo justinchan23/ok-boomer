@@ -59,11 +59,11 @@ nspPlayers.on("connection", function(socket) {
   spawnPlayer(spawnPoints, socket.id);
 
   socket.on("disconnect", () => {
-    console.log("someone disconnected ", socket.id);
+    console.log("someone disconnected ", players[socket.id]);
     spawnPoints.push([players[socket.id]["spawnx"], players[socket.id]["spawny"], players[socket.id]["color"]]);
-    delete players[socket.id];
     // emit a message to all players to remove this player
-    nspGame.emit("disconnect", socket.id);
+    nspGame.emit("disconnect", players[socket.id]);
+    delete players[socket.id];
   });
 
   // update all other players of the new player
