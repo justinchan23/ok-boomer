@@ -95,11 +95,10 @@ const nspGame = io.of("/game");
 nspGame.on("connection", function(socket) {
   console.log("someone connected game side ", socket.id);
   socket.on("disconnect", () => {
-    console.log("someone disconnected", socket.id);
+    console.log("someone disconnected game side", socket.id);
   });
   socket.on("playerDied", data => {
     nspGame.emit("removeClass", players[data]);
-
     nspPlayers.to(data).emit("playerDied", true);
   });
 });

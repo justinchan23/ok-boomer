@@ -5,6 +5,7 @@ body {
   width: 100%;
   flex-wrap: wrap;
   order: 1;
+  background-color: aquamarine !important;
 }
 
 canvas {
@@ -63,7 +64,7 @@ canvas {
   margin-bottom: 0;
 }
 
-#bombCount {
+.bombCount {
   margin-top: 0px;
   font-size: 12px !important;
 }
@@ -72,15 +73,6 @@ img {
   margin: auto;
   width: 50%;
   opacity: 50%;
-}
-
-#white {
-}
-#blue {
-}
-#black {
-}
-#red {
 }
 
 .joinedGame {
