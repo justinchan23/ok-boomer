@@ -32,8 +32,7 @@ function preload() {
     key: "gamemusic",
     url: "assets/audio/music.mp3",
     config: {
-      loop: true,
-      volume: 0.5
+      loop: true
     }
   });
 
@@ -248,14 +247,10 @@ function create() {
       bombLocation(this.bomb.x, this.bomb.y);
 
       this.player[data.playerId].bombCount--;
-<<<<<<< HEAD
-      this.physics.add.collider(this.player[data.playerId], this.bomb);
-=======
 
       for (let player of players) {
         this.physics.add.collider(this.player[player], this.bomb);
       }
->>>>>>> 4dcf259eacfc6216b0479598043077262c7ed910
 
       this.bomb.play("boom", true);
 
@@ -371,11 +366,7 @@ function update() {
       player.bombCount = player.bombCount + 1;
       bombCountPowerup.destroy();
       bombCountSound.play();
-<<<<<<< HEAD
-      $(`#${player.texture.key}BombCount`).text(`${player.bombCount}`);
-=======
       $(`#${player.texture.key}BombCount`).text(player.bombCount);
->>>>>>> 0095148a907fba9292bcc7960ab8a2dc9973b808
     };
     this.physics.overlap(this.player[player], bombCountGroup, increaseBombCount, null, this);
 
