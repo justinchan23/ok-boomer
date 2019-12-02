@@ -98,6 +98,8 @@ nspGame.on("connection", function(socket) {
     console.log("someone disconnected", socket.id);
   });
   socket.on("playerDied", data => {
+    nspGame.emit("removeClass", players[data]);
+
     nspPlayers.to(data).emit("playerDied", true);
   });
 });

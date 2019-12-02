@@ -282,6 +282,9 @@ function create() {
               if (checkOverlap(this.player[player], explosion)) {
                 this.player[player].destroy();
                 this.socket.emit("playerDied", player);
+                this.socket.on("removeClass", data => {
+                  $(`#${data.color}`).removeClass("joinedGame");
+                });
               }
             }
             //break if explosion collides with walls
@@ -329,6 +332,7 @@ function create() {
       });
     }
   });
+
   this.socket.on("newPlayer", data => {
     players.push(data.playerId);
     this.player[data.playerId] = this.physics.add.sprite(data.spawnx, data.spawny, data.color).setSize(64, 64);
