@@ -94,7 +94,7 @@ function create() {
 
   this.blocksLayer = this.map.createStaticLayer("floor", floorSet);
 
-  this.player = this.physics.add.sprite(0, 0, "white").setSize(64, 64);
+  this.player = this.physics.add.group();
 
   this.chest = this.map.createFromObjects("chest", 41, { key: "chest" });
   const chest = this.physics.add.group(this.chest);
@@ -247,7 +247,14 @@ function create() {
       bombLocation(this.bomb.x, this.bomb.y);
 
       this.player[data.playerId].bombCount--;
+<<<<<<< HEAD
       this.physics.add.collider(this.player[data.playerId], this.bomb);
+=======
+
+      for (let player of players) {
+        this.physics.add.collider(this.player[player], this.bomb);
+      }
+>>>>>>> 4dcf259eacfc6216b0479598043077262c7ed910
 
       this.bomb.play("boom", true);
 
@@ -333,6 +340,7 @@ function create() {
   });
 
   this.socket.on("newPlayer", data => {
+    console.log(this.player);
     players.push(data.playerId);
     this.player[data.playerId] = this.physics.add.sprite(data.spawnx, data.spawny, data.color).setSize(64, 64);
 
