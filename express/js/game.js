@@ -247,7 +247,6 @@ function create() {
       bombLocation(this.bomb.x, this.bomb.y);
 
       this.player[data.playerId].bombCount--;
-
       this.physics.add.collider(this.player[data.playerId], this.bomb);
 
       this.bomb.play("boom", true);
@@ -363,6 +362,7 @@ function update() {
       player.bombCount = player.bombCount + 1;
       bombCountPowerup.destroy();
       bombCountSound.play();
+      $(`#${player.texture.key}BombCount`).text(`${player.bombCount}`);
     };
     this.physics.overlap(this.player[player], bombCountGroup, increaseBombCount, null, this);
 
