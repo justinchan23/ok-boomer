@@ -362,7 +362,11 @@ function update() {
       player.bombCount = player.bombCount + 1;
       bombCountPowerup.destroy();
       bombCountSound.play();
+<<<<<<< HEAD
       $(`#${player.texture.key}BombCount`).text(`${player.bombCount}`);
+=======
+      $(`#${player.texture.key}BombCount`).text(player.bombCount);
+>>>>>>> 0095148a907fba9292bcc7960ab8a2dc9973b808
     };
     this.physics.overlap(this.player[player], bombCountGroup, increaseBombCount, null, this);
 
