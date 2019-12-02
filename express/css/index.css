@@ -78,3 +78,22 @@ img {
 .joinedGame {
   opacity: 1 !important;
 }
+
+.powerups {
+  opacity: 1 !important;
+  height: 50px;
+  width: 50px;
+  margin: 10px;
+}
+
+#powerupTitle {
+  font-size: 12px !important;
+}
+
+#powerupLedg {
+  margin-top: 15px !important;
+}
+
+.cont {
+  padding-top: 20px !important;
+}
