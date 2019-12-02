@@ -7,9 +7,9 @@ import "./Dpad.css";
 import io from "socket.io-client";
 import ReactNipple from "react-nipple";
 
-let socketClient = io("http://192.168.88.231:3001/players");
+let socketClient = io("http://192.168.88.226:3001/players");
 
-export default function Default(props) {
+export default function Default() {
   const [colorId, setColorId] = useState("");
   const [data, setData] = useState(undefined);
   const [lose, setLose] = useState(false);
@@ -19,6 +19,10 @@ export default function Default(props) {
   });
   socketClient.on("playerDied", data => {
     setLose(data);
+  });
+
+  socketClient.on("playerWin", data => {
+    setWin(data);
   });
 
   const playerMoving = angle => {

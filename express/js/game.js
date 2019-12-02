@@ -22,11 +22,11 @@ let bombPowerGroup;
 let bombCountSound;
 let msSound;
 
-let up;
-let left;
-let right;
-let down;
-let space;
+// let up;
+// let left;
+// let right;
+// let down;
+// let space;
 
 function preload() {
   this.load.image("white", "assets/characters/white.png");
@@ -101,7 +101,6 @@ function create() {
   this.blocksLayer = this.map.createStaticLayer("floor", floorSet);
 
   this.player = this.physics.add.sprite(0, 0, "white").setSize(64, 64);
-  this.player.depth = -1;
 
   this.chest = this.map.createFromObjects("chest", 41, { key: "chest" });
   const chest = this.physics.add.group(this.chest);
@@ -149,15 +148,15 @@ function create() {
   };
 
   //collision for world bounds
-  this.player.setCollideWorldBounds(true);
+  // this.player.setCollideWorldBounds(true);
 
-  this.physics.add.collider(this.player, this.blocksLayer);
+  // this.physics.add.collider(this.player, this.blocksLayer);
 
-  up = this.input.keyboard.addKey("W");
-  left = this.input.keyboard.addKey("A");
-  right = this.input.keyboard.addKey("D");
-  down = this.input.keyboard.addKey("S");
-  space = this.input.keyboard.addKey("SPACE");
+  // up = this.input.keyboard.addKey("W");
+  // left = this.input.keyboard.addKey("A");
+  // right = this.input.keyboard.addKey("D");
+  // down = this.input.keyboard.addKey("S");
+  // space = this.input.keyboard.addKey("SPACE");
 
   //bomb animation
   this.anims.create({
@@ -343,7 +342,6 @@ function create() {
     this.player[data.playerId]["bombCount"] = 1;
     this.player[data.playerId]["speed"] = 200;
     this.player[data.playerId]["bombPower"] = 1;
-    console.log(this.player);
 
     this.player[data.playerId].setCollideWorldBounds(true);
     this.player[data.playerId].depth = 1;
@@ -385,101 +383,101 @@ function update() {
     this.physics.overlap(this.player[player], bombPowerGroup, increaseBombPower, null, this);
   }
   //makes sure there is a player to execute movement
-  if (this.player.body) {
-    this.player.body.setVelocity(0);
+  // if (this.player.body) {
+  //   this.player.body.setVelocity(0);
 
-    // Horizontal movement
-    if (this.input.keyboard.checkDown(left, 0)) {
-      this.player.body.setVelocityX(-200);
-    } else if (this.input.keyboard.checkDown(right, 0)) {
-      this.player.body.setVelocityX(200);
-    }
-    // Vertical movement
-    if (this.input.keyboard.checkDown(up, 0)) {
-      this.player.body.setVelocityY(-200);
-    } else if (this.input.keyboard.checkDown(down, 0)) {
-      this.player.body.setVelocityY(200);
-    }
+  //   // Horizontal movement
+  //   if (this.input.keyboard.checkDown(left, 0)) {
+  //     this.player.body.setVelocityX(-200);
+  //   } else if (this.input.keyboard.checkDown(right, 0)) {
+  //     this.player.body.setVelocityX(200);
+  //   }
+  //   // Vertical movement
+  //   if (this.input.keyboard.checkDown(up, 0)) {
+  //     this.player.body.setVelocityY(-200);
+  //   } else if (this.input.keyboard.checkDown(down, 0)) {
+  //     this.player.body.setVelocityY(200);
+  //   }
 
-    // Normalize and scale the velocity so that player can't move faster along a diagonal
-    this.player.body.velocity.normalize().scale(speed);
+  //   // Normalize and scale the velocity so that player can't move faster along a diagonal
+  //   this.player.body.velocity.normalize().scale(speed);
 
-    //makes sure players displays above bomb
-    this.player.depth = 1;
-  }
+  //   //makes sure players displays above bomb
+  //   this.player.depth = 1;
+  // }
 
-  if (this.player.body) {
-    // Spawning Bomb
-    if (this.input.keyboard.checkDown(space, 99999)) {
-      this.bomb = this.physics.add
-        .sprite(calculateCenterTileXY(this.player.x), calculateCenterTileXY(this.player.y), "bomb")
-        .setImmovable()
-        .setSize(64, 64);
+  // if (this.player.body) {
+  //   // Spawning Bomb
+  //   if (this.input.keyboard.checkDown(space, 99999)) {
+  //     this.bomb = this.physics.add
+  //       .sprite(calculateCenterTileXY(this.player.x), calculateCenterTileXY(this.player.y), "bomb")
+  //       .setImmovable()
+  //       .setSize(64, 64);
 
-      this.physics.add.collider(this.player, this.bomb);
-      this.bomb.play("boom", true);
+  //     this.physics.add.collider(this.player, this.bomb);
+  //     this.bomb.play("boom", true);
 
-      let bomb = this.bomb;
+  //     let bomb = this.bomb;
 
-      //destory bomb after detonation animations
-      this.bomb.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
-        bomb.destroy();
+  //     //destory bomb after detonation animations
+  //     this.bomb.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
+  //       bomb.destroy();
 
-        //bomb power level
-        let bombPower = 2;
+  //       //bomb power level
+  //       let bombPower = 2;
 
-        //directions for bombs to spread
-        const explosionDirection = [
-          { x: 0, y: 0 },
-          { x: 0, y: -1 },
-          { x: 1, y: 0 },
-          { x: 0, y: 1 },
-          { x: -1, y: 0 }
-        ];
+  //       //directions for bombs to spread
+  //       const explosionDirection = [
+  //         { x: 0, y: 0 },
+  //         { x: 0, y: -1 },
+  //         { x: 1, y: 0 },
+  //         { x: 0, y: 1 },
+  //         { x: -1, y: 0 }
+  //       ];
 
-        //checks overlaps with game objects and explosions
-        function checkOverlap(gameObject, explosion) {
-          if (!gameObject) {
-            return false;
-          }
-          var boundsA = gameObject.getBounds();
-          var boundsB = explosion.getBounds();
-          return Phaser.Geom.Rectangle.Overlaps(boundsA, boundsB);
-        }
+  //       //checks overlaps with game objects and explosions
+  //       function checkOverlap(gameObject, explosion) {
+  //         if (!gameObject) {
+  //           return false;
+  //         }
+  //         var boundsA = gameObject.getBounds();
+  //         var boundsB = explosion.getBounds();
+  //         return Phaser.Geom.Rectangle.Overlaps(boundsA, boundsB);
+  //       }
 
-        for (const direction of explosionDirection) {
-          for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
-            const bombX = bomb.x + direction.x * blastLength * 64;
-            const bombY = bomb.y + direction.y * blastLength * 64;
+  //       for (const direction of explosionDirection) {
+  //         for (let blastLength = 0; blastLength <= bombPower; blastLength++) {
+  //           const bombX = bomb.x + direction.x * blastLength * 64;
+  //           const bombY = bomb.y + direction.y * blastLength * 64;
 
-            let explosion = this.physics.add.sprite(bombX, bombY, "fire").setImmovable();
+  //           let explosion = this.physics.add.sprite(bombX, bombY, "fire").setImmovable();
 
-            if (checkOverlap(this.player, explosion)) {
-              this.player.destroy();
-            }
-            //break if explosion collides with walls
-            if (checkOverlap(this.wallMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`], explosion)) {
-              explosion.destroy();
-              break;
-            }
+  //           if (checkOverlap(this.player, explosion)) {
+  //             this.player.destroy();
+  //           }
+  //           //break if explosion collides with walls
+  //           if (checkOverlap(this.wallMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`], explosion)) {
+  //             explosion.destroy();
+  //             break;
+  //           }
 
-            //plays explosion animation
-            explosion.play("fire", true);
+  //           //plays explosion animation
+  //           explosion.play("fire", true);
 
-            //clears the explosion after animation is complete
-            explosion.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
-              explosion.destroy();
-            });
+  //           //clears the explosion after animation is complete
+  //           explosion.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
+  //             explosion.destroy();
+  //           });
 
-            //checks for explosion-chest overlap and destorys chest
-            if (checkOverlap(this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`], explosion)) {
-              this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`].destroy();
-              delete this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`];
-              break;
-            }
-          }
-        }
-      });
-    }
-  }
+  //           //checks for explosion-chest overlap and destorys chest
+  //           if (checkOverlap(this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`], explosion)) {
+  //             this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`].destroy();
+  //             delete this.chestMap[`${(bombX - 32) / 64},${(bombY - 32) / 64}`];
+  //             break;
+  //           }
+  //         }
+  //       }
+  //     });
+  //   }
+  // }
 }
