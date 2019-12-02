@@ -10,7 +10,12 @@
       integrity="sha256-BTlTdQO9/fascB1drekrDVkaKd9PkwBymMlHOiG+qLI="
       crossorigin="anonymous"
     ></script>
-
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css"
+      integrity="sha256-46qynGAkLSFpVbEBog43gvNhfrOj+BmwXdxFgVK/Kvc="
+      crossorigin="anonymous"
+    />
     <title>Ok, Boomer</title>
     <link rel="stylesheet" type="text/css" href="css/index.css" />
   </head>
@@ -25,38 +30,54 @@
 
     <div id="qrcode" class="nes-container is-dark with-title ">
       <p class="title">Play</p>
-      <div id="code"></div>
-      <p id="scan">Scan the QR code to join!</p>
+
+      <div class="cont">
+        <div id="code"><p>QRCODE</p></div>
+        <p id="scan">Scan the QR code to join!</p>
+        <div id="powerupLedg">
+          <p id="powerupTitle">Power Ups:</p>
+          <img src="./assets/powerups/bombincrease.png" class="powerups" />
+          <p id="powerupTitle"><i class="fas fa-arrow-up"></i> Bomb Count</p>
+
+          <img src="./assets/powerups/bombpowerincrease.png" class="powerups" />
+          <p id="powerupTitle"><i class="fas fa-arrow-up"></i> Bomb Power</p>
+
+          <img src="./assets/powerups/movementincrease.png" class="powerups" />
+          <p id="powerupTitle"><i class="fas fa-arrow-up"></i> Speed</p>
+        </div>
+      </div>
     </div>
     <div id="players" class="nes-container is-dark with-title">
       <p class="title">Players</p>
-      <div class="player">
-        <div class="char">
-          <img src="./assets/characters/white.png" alt="white" id="white" />
+      <div class="cont">
+        <div class="player">
+          <div class="char">
+            <img src="./assets/characters/white.png" alt="white" id="white" />
+          </div>
+          <p class="bombs">bombs available:</p>
+          <p class="bombs bombCount" id="whiteBombCount">1</p>
         </div>
-        <p class="bombs">bombs available:</p>
-        <p class="bombs bombCount" id="whiteBombCount">1</p>
-      </div>
-      <div class="player">
-        <div class="char">
-          <img src="./assets/characters/blue.png" alt="blue" id="blue" />
+        <div class="player">
+          <div class="char">
+            <img src="./assets/characters/blue.png" alt="blue" id="blue" />
+          </div>
+          <p class="bombs">bombs available:</p>
+          <p class="bombs bombCount" id="blueBombCount">1</p>
         </div>
-        <p class="bombs">bombs available:</p>
-        <p class="bombs bombCount" id="blueBombCount">1</p>
-      </div>
-      <div class="player">
-        <div class="char">
-          <img src="./assets/characters/black.png" alt="black" id="black" />
+        <div class="player">
+          <div class="char">
+            <img src="./assets/characters/black.png" alt="black" id="black" />
+          </div>
+          <p class="bombs">bombs available:</p>
+          <p class="bombs bombCount" id="blackBombCount">1</p>
         </div>
-        <p class="bombs">bombs available:</p>
-        <p class="bombs bombCount" id="blackBombCount">1</p>
-      </div>
-      <div class="player">
-        <div class="char">
-          <img src="./assets/characters/red.png" alt="red" id="red" />
+        <div class="player">
+          <div class="char">
+            <img src="./assets/characters/red.png" alt="red" id="red" />
+          </div>
+          <p class="bombs">bombs available:</p>
+          <p class="bombs bombCount" id="redBombCount">1</p>
         </div>
-        <p class="bombs">bombs available:</p>
-        <p class="bombs bombCount" id="redBombCount">1</p>
       </div>
     </div>
   </body>
