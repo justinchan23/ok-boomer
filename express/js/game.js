@@ -122,6 +122,19 @@ function preload() {
   this.load.image("bombPowerIncrease", "assets/powerups/bombpowerincrease.png");
 }
 
+const countdown = () => {
+  let time = 30;
+  const timer = setInterval(countdown, 1000);
+
+  const countdown = () => {
+    if (time === 0) {
+      return true;
+    } else {
+      return time;
+    }
+  };
+};
+
 function create() {
   this.socket = io("/game");
   //gameplay music
