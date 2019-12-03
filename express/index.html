@@ -89,14 +89,25 @@
           <div class="char">
             <img src="./assets/characters/red.png" alt="red" id="red" class="charImg" />
           </div>
+<<<<<<< HEAD
           <div class="bombs bombCount">
             <div><img class="bombImage" src="./assets/powerups/bombincrease.png" /></div>
             <p id="redBombCount">: 1</p>
           </div>
+=======
+          <div class="bombs bombCount" >
+              <div><img class="bombImage" src="./assets/powerups/bombincrease.png" /></div>
+              <p id="redBombCount">: 1</p>
+            </div>
+>>>>>>> aa0f3fd797612635497be69f23fb6e5c50cd9b2a
         </div>
       </div>
     </div>
   </body>
+
+  <div class="startPage">
+    <button type="button" class="nes-btn is-success">Start!</button>
+  </div>
 
   <script
     src="https://code.jquery.com/jquery-3.4.1.slim.js"
@@ -107,9 +118,10 @@
     const typeNumber = 4;
     const errorCorrectionLevel = "L";
     let qr = qrcode(typeNumber, errorCorrectionLevel);
-    qr.addData("http://192.168.88.226:3000");
+    qr.addData("http://192.168.88.231:3000");
     qr.make();
     document.getElementById("code").innerHTML = qr.createImgTag();
   </script>
   <script src="js/game.js" type="text/javascript"></script>
+  <script src="js/startPage.js" type="text/javascript"></script>
 </html>
