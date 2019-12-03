@@ -1,5 +1,5 @@
 $(() => {
-  $(".nes-btn").click(() => {
+  $(".start").click(() => {
     $(".startPage").addClass("hidden");
   });
 });
