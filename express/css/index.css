@@ -24,6 +24,11 @@ canvas {
   order: 4;
   width: 15%;
 }
+#allChars {
+  display: flex !important;
+  flex-direction: column !important;
+  /* padding-top: 50px !important; */
+}
 
 #scan {
   padding-top: 20px;
@@ -31,34 +36,41 @@ canvas {
 
 .nav {
   width: 100%;
-  margin-bottom: 25px !important;
+  margin-bottom: 15px !important;
   position: fixed;
   border-radius: 10px;
-  box-shadow: 5px 10px #888888;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.nav > p {
+  align-self: flex-end;
 }
 
 .player {
   height: 22%;
   background-color: aliceblue;
-  margin-bottom: 10px;
-  margin-top: 10px;
-  border-radius: 15px;
-  padding-top: 5px;
+  margin-bottom: 25% !important;
+  padding-top: 15px;
+  justify-content: space-between !important;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 5px 7px #888888;
+  border-radius: 8px;
 }
 .char {
   height: 50%;
   width: 100%;
-  border-radius: 15px;
-  padding-top: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
 .bombs {
   font-size: 10px !important;
   color: black !important;
-  padding-left: 10px;
-  margin-top: 10px;
-  margin-bottom: 0;
 }
 
 .bombImage {
