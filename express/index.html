@@ -29,7 +29,7 @@
   <body>
     <div class="nes-container is-rounded nav is-dark">
       <p>OK, BOOMER</p>
-      <a class="nes-btn is-rounded" href="javascript:history.go(0)">Restart</a>
+      <a class="nes-btn is-rounded nes-pointer" href="javascript:history.go(0)">Restart</a>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -58,7 +58,7 @@
     <div id="players" class="nes-container is-dark with-title">
       <p class="title">Players</p>
       <div class="cont" id="allChars">
-        <div class="player">
+        <div class="player nes-pointer">
           <div class="char">
             <img src="./assets/characters/white.png" alt="white" id="white" class="charImg" />
           </div>
@@ -67,7 +67,7 @@
             <p id="whiteBombCount">: 1</p>
           </div>
         </div>
-        <div class="player">
+        <div class="player nes-pointer">
           <div class="char">
             <img src="./assets/characters/blue.png" alt="blue" id="blue" class="charImg" />
           </div>
@@ -76,7 +76,7 @@
             <p id="blueBombCount">: 1</p>
           </div>
         </div>
-        <div class="player">
+        <div class="player nes-pointer">
           <div class="char">
             <img src="./assets/characters/black.png" alt="black" id="black" class="charImg" />
           </div>
@@ -85,7 +85,7 @@
             <p id="blackBombCount">: 1</p>
           </div>
         </div>
-        <div class="player">
+        <div class="player nes-pointer">
           <div class="char">
             <img src="./assets/characters/red.png" alt="red" id="red" class="charImg" />
           </div>
