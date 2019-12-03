@@ -92,7 +92,7 @@
           </div>
           <div class="bombs bombCount" >
               <div><img class="bombImage" src="./assets/powerups/bombincrease.png" /></div>
-              <p id="whiteBombCount">: 1</p>
+              <p id="redBombCount">: 1</p>
             </div>
         </div>
       </div>
@@ -108,7 +108,7 @@
     const typeNumber = 4;
     const errorCorrectionLevel = "L";
     let qr = qrcode(typeNumber, errorCorrectionLevel);
-    qr.addData("http://192.168.88.226:3000");
+    qr.addData("http://192.168.88.151:3000");
     qr.make();
     document.getElementById("code").innerHTML = qr.createImgTag();
   </script>
