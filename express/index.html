@@ -29,7 +29,9 @@
   <body>
     <div class="nes-container is-rounded nav is-dark">
       <p>OK, BOOMER</p>
-      <a class="nes-btn is-rounded nes-pointer" href="javascript:history.go(0)">Restart</a>
+      <button type="button" id="opener" class="nes-btn is-primary">
+        Restart
+      </button>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -100,6 +102,13 @@
 
   <div class="startPage">
     <button type="button" class="nes-btn is-success start">Start!</button>
+  </div>
+
+  <div class="nes-dialog is-rounded hidden confirm">
+    <p class="title">CAUTION</p>
+    <p>Are you sure you want to restart?</p>
+    <button class="nes-btn" id="cancel">Cancel</button>
+    <button class="nes-btn is-primary" onClick="window.location.reload();">Confirm</button>
   </div>
 
   <script

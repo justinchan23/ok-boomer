@@ -1,46 +1,51 @@
-# React + Express No-Fluff Boilerplate
+# Ok, Boomer
 
-A boilerplate project for anyone interested in making a project that uses React and Express.
+## Description
 
-This repository is a bootleg of @NimaBoscarino's [React Rails Boilerplate](https://github.com/NimaBoscarino/react-rails-boilerplate). It uses the same React app, but replaces the Rails server with an Express server.
+Ok, Boomer is a Phaser.js based game with a React based controller. The goal of the game is to be the last one standing in a battle-royale styled match.
 
-Note! This boilerplate has _no fluff_! That means that there's nothing set up for you to do authentication stuff, there's no Redux stuff, and there's no React Router stuff. On the Express end, there is no session storage or database connection.
-
-The main important bit is that the React project has `proxy` set to `localhost:8080` in the `package.json` file, and that the Express app listens to port 8080 in `server.js`. Take a look!
-
-You can (and perhaps should) rename the directories `express-back-end` and `react-front-end` if you want-- The name doesn't matter.
-
-## Running the projects
+## Running The Game
 
 You need **TWO** terminal windows/tabs for this (or some other plan for running two Node processes).
 
-In one terminal, `cd` into `react-front-end`. Run `npm install` or `yarn` to install the dependencies. Then run `npm start` or `yarn start`, and go to `localhost:3000` in your browser.
+In one terminal, `cd` into `react-front-end`. Be sure to change the IP address in `Default.js` to your public IP address here. Run `npm install` or `yarn` to install the dependencies, then run `npm start` or `yarn start`.
 
-In the other terminal, `cd` into `express-back-end`. Run `npm install` or `yarn` to install the dependencies, then `npm start` or `yarn start` to launch the server.
+In the other terminal, `cd` into `express`. Be sure to change the IP address in `index.html` to your public IP address here as well. Run `npm install` or `yarn` to install the dependencies, then `npm start` or `yarn start` to launch the server. Head over to <http://localhost:3001/> to play!
 
-In the browser, you can click on the button and see the data get loaded.
+To join the game, scan the QR code with your phone to generate your controller.
 
-If this doesn't work, please message me!
+## Stack
 
-## Next steps
+- Node.js
+- Express
+- React JS
+- Socket.io
+- Phaser.js
+- JQuery
+- HTML5
+- JavaScript
+- CSS
 
-From here, you can start working on your project!
+## Dependencies
 
-As soon as the dependencies are installed, your Express server can serve JSON and static assets (like images) in response to API calls from the React app. You can get started on developing your React app, routing plan, etc. right away! Any request that isn't handled by React is passed on to the Express server. That means that you can call a route like `/api/users` from React using `fetch`, `axios`, or something else, and Express will receive it as though they originated from the same app. For routing, best practice is to namespace all of your data routes to `/api`, so that they don't clash with other routing schemes, like React Router.
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "morgan": "^1.9.1",
+    "nodemon": "^1.18.7",
+    "phaser-tiled-json-external-loader": "^0.1.0",
+    "socket.io": "^2.3.0",
+    "classnames": "^2.2.6",
+    "nipplejs": "^0.8.4",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-nipple": "^1.0.1",
+    "react-scripts": "2.1.8",
+    "socket.io-client": "^2.3.0"
 
-At some point, you'll likely want to install and configure a database driver for Postgres or MongoDB-- Refer to past projects for hints on how to do this.
+## Contributions
 
-And don't forget to update the README!
+This app was created by...
 
-## Example Projects
-
-You might want to look at examples of projects that have used this boilerplate for hints on how to extend it. Here are a few:
-
-* [Later Cart](https://github.com/bonitac/later-cart)
-* [Buddi.io](https://github.com/Danny-Tran/buddi.io)
-
-If you'd like your project added to the list, please shoot me a message.
-
-## Contact
-
-Please contact me on Slack (@garrettgsb) or Nima at `nima@lighthouselabs.com` if you have any questions, requests, or feedback, or post an issue to this repo. If you are using the boilerplate, I'd love to hear from you as well!
+- https://github.com/umrude
+- https://github.com/Darrenni97
+- https://github.com/SunnieBB
