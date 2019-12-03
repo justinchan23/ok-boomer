@@ -16,6 +16,12 @@
       integrity="sha256-46qynGAkLSFpVbEBog43gvNhfrOj+BmwXdxFgVK/Kvc="
       crossorigin="anonymous"
     />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.js"
+      integrity="sha256-GK45n4EYK8nekW6cd7GV3yDMWNby1VpisIWimfG/F4A="
+      crossorigin="anonymous"
+    ></script>
+
     <title>Ok, Boomer</title>
     <link rel="stylesheet" type="text/css" href="css/index.css" />
   </head>
@@ -32,7 +38,7 @@
       <p class="title">Play</p>
 
       <div class="cont">
-        <div id="code"><p>QRCODE</p></div>
+        <div id="code"></div>
         <p id="scan">Scan the QR code to join!</p>
         <div id="powerupLedg">
           <p id="powerupTitle">Power Ups:</p>
@@ -54,7 +60,7 @@
       <div class="cont">
         <div class="player">
           <div class="char">
-            <img src="./assets/characters/white.png" alt="white" id="white" />
+            <img src="./assets/characters/white.png" alt="white" id="white" class="charImg" />
           </div>
           <div class="bombs bombCount" >
             <div><img class="bombImage" src="./assets/powerups/bombincrease.png" /></div>
@@ -64,7 +70,7 @@
         </div>
         <div class="player">
           <div class="char">
-            <img src="./assets/characters/blue.png" alt="blue" id="blue" />
+            <img src="./assets/characters/blue.png" alt="blue" id="blue" class="charImg" />
           </div>
           <div class="bombs bombCount" >
               <div><img class="bombImage" src="./assets/powerups/bombincrease.png" /></div>
@@ -73,7 +79,7 @@
         </div>
         <div class="player">
           <div class="char">
-            <img src="./assets/characters/black.png" alt="black" id="black" />
+            <img src="./assets/characters/black.png" alt="black" id="black" class="charImg" />
           </div>
           <div class="bombs bombCount" >
               <div><img class="bombImage" src="./assets/powerups/bombincrease.png" /></div>
@@ -82,7 +88,7 @@
         </div>
         <div class="player">
           <div class="char">
-            <img src="./assets/characters/red.png" alt="red" id="red" />
+            <img src="./assets/characters/red.png" alt="red" id="red" class="charImg" />
           </div>
           <div class="bombs bombCount" >
               <div><img class="bombImage" src="./assets/powerups/bombincrease.png" /></div>
@@ -98,5 +104,13 @@
     integrity="sha256-BTlTdQO9/fascB1drekrDVkaKd9PkwBymMlHOiG+qLI="
     crossorigin="anonymous"
   ></script>
+  <script>
+    const typeNumber = 4;
+    const errorCorrectionLevel = "L";
+    let qr = qrcode(typeNumber, errorCorrectionLevel);
+    qr.addData("http://192.168.88.226:3000");
+    qr.make();
+    document.getElementById("code").innerHTML = qr.createImgTag();
+  </script>
   <script src="js/game.js" type="text/javascript"></script>
 </html>
