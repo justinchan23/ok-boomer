@@ -119,3 +119,24 @@ canvas {
   height: 70%;
   box-shadow: 5px 7px #888888;
 }
+
+.startPage {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 6;
+  /* display: none; */
+}
+
+.nes-btn {
+  z-index: 7;
+  margin-top: 28%;
+  margin-left: 48%;
+}
+
+.hidden {
+  display: none;
+}
