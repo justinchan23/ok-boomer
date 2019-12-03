@@ -60,8 +60,7 @@ function preload() {
     key: "gamemusic",
     url: "assets/audio/music.mp3",
     config: {
-      loop: true,
-      volume: 0.5
+      loop: true
     }
   });
 
