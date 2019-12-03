@@ -140,13 +140,14 @@ canvas {
   left: 0;
   background-color: rgba(0, 0, 0, 0.4);
   z-index: 6;
+  background: url(../assets/background.png) center;
   /* display: none; */
 }
 
 .start {
   z-index: 7;
-  margin-top: 28%;
-  margin-left: 48%;
+  margin-top: 37%;
+  margin-left: 47%;
 }
 .titlePlaer {
   z-index: 8;
@@ -163,4 +164,10 @@ canvas {
   margin-top: 25px;
   margin: auto;
   background-color: aliceblue;
+}
+.countdown {
+  color: white !important;
+  margin-top: 20% !important;
+  position: fixed !important;
+  z-index: 6 !important;
 }

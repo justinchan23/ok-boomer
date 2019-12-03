@@ -4,8 +4,8 @@ const config = {
   width: 1024,
   height: 1024,
   physics: {
-    default: "arcade",
-    arcade: { debug: SVGComponentTransferFunctionElement }
+    default: "arcade"
+    // arcade: { debug: SVGComponentTransferFunctionElement }
   },
   scene: {
     preload: preload,
@@ -15,12 +15,42 @@ const config = {
 };
 
 const game = new Phaser.Game(config);
+
 const players = [];
+
 let bombCountGroup;
 let movementSpeedGroup;
 let bombPowerGroup;
 let bombCountSound;
 let msSound;
+
+//calculates the center of the tile player is standing on
+const calculateCenterTileXY = playerLocation => {
+  return 32 - (playerLocation % 64) + playerLocation;
+};
+
+let gameStart = false;
+let gameOver = false;
+let time = 10;
+const countdown = () => {
+  const timer = setInterval(() => {
+    if (time === 0) {
+      clearInterval(timer);
+      gameStart = true;
+      $(".countdown").addClass("hidden");
+    } else {
+      time = time - 1;
+      $(".countdown").html(`<p>Game Starting in ${time} seconds!</p>`);
+      $(".countdown").removeClass("hidden");
+    }
+  }, 1000);
+};
+
+$(() => {
+  $(".start").click(() => {
+    countdown();
+  });
+});
 
 function preload() {
   this.load.spritesheet({
@@ -64,14 +94,22 @@ function preload() {
     }
   });
 
-  this.load.audio("bombExplosion", "assets/audio/explosionSound.wav");
-  this.load.audio("bombCountSound", "assets/audio/bombCountSound.wav");
-  this.load.audio("msSound", "assets/audio/msSound.wav");
-
-  this.load.tilemapTiledJSON("map1", "assets/maps/map1.json");
-  this.load.image("floor", "assets/maps/floor.png");
-  this.load.spritesheet("blocks", "assets/maps/blocks.png", { frameWidth: 64, frameHeight: 64 });
-  this.load.spritesheet("chest", "assets/maps/chests.png", { frameWidth: 64, frameHeight: 64 });
+  this.load.spritesheet({
+    key: "blocks",
+    url: "assets/maps/blocks.png",
+    frameConfig: {
+      frameWidth: 64,
+      frameHeight: 64
+    }
+  });
+  this.load.spritesheet({
+    key: "chest",
+    url: "assets/maps/chests.png",
+    frameConfig: {
+      frameWidth: 64,
+      frameHeight: 64
+    }
+  });
 
   this.load.spritesheet({
     key: "bomb",
@@ -94,16 +132,18 @@ function preload() {
     }
   });
 
+  this.load.audio("bombExplosion", "assets/audio/explosionSound.wav");
+  this.load.audio("bombCountSound", "assets/audio/bombCountSound.wav");
+  this.load.audio("msSound", "assets/audio/msSound.wav");
+
+  this.load.tilemapTiledJSON("map1", "assets/maps/map1.json");
+  this.load.image("floor", "assets/maps/floor.png");
+
   //powerups
   this.load.image("movementSpeedIncrease", "assets/powerups/movementincrease.png");
   this.load.image("bombCountIncrease", "assets/powerups/bombincrease.png");
   this.load.image("bombPowerIncrease", "assets/powerups/bombpowerincrease.png");
 }
-
-//calculates the center of the tile player is standing on
-const calculateCenterTileXY = playerLocation => {
-  return 32 - (playerLocation % 64) + playerLocation;
-};
 
 function create() {
   this.socket = io("/game");
@@ -183,73 +223,77 @@ function create() {
 
   const movePlayer = data => {
     //player turn animation
+    let player = this.player[data.playerId];
+
     this.anims.create({
-      key: `${this.player[data.playerId].texture.key}-left`,
-      frames: this.anims.generateFrameNumbers(`${this.player[data.playerId].texture.key}`, { start: 3, end: 3 }),
+      key: `${player.texture.key}-left`,
+      frames: this.anims.generateFrameNumbers(`${player.texture.key}`, { start: 3, end: 3 }),
       repeat: -1
     });
     this.anims.create({
-      key: `${this.player[data.playerId].texture.key}-right`,
-      frames: this.anims.generateFrameNumbers(`${this.player[data.playerId].texture.key}`, { start: 1, end: 1 }),
+      key: `${player.texture.key}-right`,
+      frames: this.anims.generateFrameNumbers(`${player.texture.key}`, { start: 1, end: 1 }),
       repeat: -1
     });
     this.anims.create({
-      key: `${this.player[data.playerId].texture.key}-down`,
-      frames: this.anims.generateFrameNumbers(`${this.player[data.playerId].texture.key}`, { start: 0, end: 0 }),
+      key: `${player.texture.key}-down`,
+      frames: this.anims.generateFrameNumbers(`${player.texture.key}`, { start: 0, end: 0 }),
       repeat: -1
     });
     this.anims.create({
-      key: `${this.player[data.playerId].texture.key}-up`,
-      frames: this.anims.generateFrameNumbers(`${this.player[data.playerId].texture.key}`, { start: 2, end: 2 }),
+      key: `${player.texture.key}-up`,
+      frames: this.anims.generateFrameNumbers(`${player.texture.key}`, { start: 2, end: 2 }),
       repeat: -1
     });
 
     //down
     if ((data.angle >= 0 && data.angle < 22.5) || (data.angle < 359 && data.angle > 337.5)) {
-      this.player[data.playerId].play(`${this.player[data.playerId].texture.key}-down`, true);
-      this.player[data.playerId].body.setVelocityY(this.player[data.playerId].speed);
+      player.play(`${player.texture.key}-down`, true);
+      player.body.setVelocityY(player.speed);
       //right/down
     } else if (data.angle >= 22.5 && data.angle < 67.5) {
-      this.player[data.playerId].play(`${this.player[data.playerId].texture.key}-right`, true);
-      this.player[data.playerId].body.setVelocityX(this.player[data.playerId].speed);
-      this.player[data.playerId].body.setVelocityY(this.player[data.playerId].speed);
+      player.play(`${player.texture.key}-right`, true);
+      player.body.setVelocityX(player.speed);
+      player.body.setVelocityY(player.speed);
 
       //right
     } else if (data.angle >= 67.5 && data.angle < 112.5) {
-      this.player[data.playerId].play(`${this.player[data.playerId].texture.key}-right`, true);
-      this.player[data.playerId].body.setVelocityX(this.player[data.playerId].speed);
+      player.play(`${player.texture.key}-right`, true);
+      player.body.setVelocityX(player.speed);
       //right/up
     } else if (data.angle >= 112.5 && data.angle < 157.5) {
-      this.player[data.playerId].play(`${this.player[data.playerId].texture.key}-right`, true);
-      this.player[data.playerId].body.setVelocityX(this.player[data.playerId].speed);
-      this.player[data.playerId].body.setVelocityY(-this.player[data.playerId].speed);
+      player.play(`${player.texture.key}-right`, true);
+      player.body.setVelocityX(player.speed);
+      player.body.setVelocityY(-player.speed);
 
       //up
     } else if (data.angle >= 157.5 && data.angle < 202.5) {
-      this.player[data.playerId].play(`${this.player[data.playerId].texture.key}-up`, true);
-      this.player[data.playerId].body.setVelocityY(-this.player[data.playerId].speed);
+      player.play(`${player.texture.key}-up`, true);
+      player.body.setVelocityY(-player.speed);
 
       //up/left
     } else if (data.angle >= 202.5 && data.angle < 247.5) {
-      this.player[data.playerId].play(`${this.player[data.playerId].texture.key}-left`, true);
-      this.player[data.playerId].body.setVelocityX(-this.player[data.playerId].speed);
-      this.player[data.playerId].body.setVelocityY(-this.player[data.playerId].speed);
+      player.play(`${player.texture.key}-left`, true);
+      player.body.setVelocityX(-player.speed);
+      player.body.setVelocityY(-player.speed);
 
       //left
     } else if (data.angle >= 247.5 && data.angle < 292.5) {
-      this.player[data.playerId].play(`${this.player[data.playerId].texture.key}-left`, true);
-      this.player[data.playerId].body.setVelocityX(-this.player[data.playerId].speed);
+      player.play(`${player.texture.key}-left`, true);
+      player.body.setVelocityX(-player.speed);
 
       //down/left
     } else if (data.angle >= 292.5 && data.angle < 337.5) {
-      this.player[data.playerId].play(`${this.player[data.playerId].texture.key}-left`, true);
-      this.player[data.playerId].body.setVelocityX(-this.player[data.playerId].speed);
-      this.player[data.playerId].body.setVelocityY(this.player[data.playerId].speed);
+      player.play(`${player.texture.key}-left`, true);
+      player.body.setVelocityX(-player.speed);
+      player.body.setVelocityY(player.speed);
     }
   };
 
   this.socket.on("playerMovement", data => {
-    movePlayer(data);
+    if (gameStart && !gameOver) {
+      movePlayer(data);
+    }
   });
 
   // Stop any previous movement from the last frame
@@ -257,6 +301,7 @@ function create() {
     this.player[data.playerId].body.setVelocity(0);
   });
 
+  //checks if bomb is already on spot
   const isBombOnXY = (x, y) => {
     return `${x},${y}` in this.bombMap;
   };
@@ -278,7 +323,8 @@ function create() {
       !isBombOnXY(
         (calculateCenterTileXY(this.player[data.playerId].x) - 32) / 64,
         (calculateCenterTileXY(this.player[data.playerId].y) - 32) / 64
-      )
+      ) &&
+      gameStart
     ) {
       this.bomb = this.physics.add
         .sprite(
@@ -327,6 +373,7 @@ function create() {
             for (const player of players) {
               if (checkOverlap(this.player[player], explosion)) {
                 this.player[player].destroy();
+                players.splice(players.indexOf(data.playerId), 1);
                 this.socket.emit("playerDied", player);
                 this.socket.on("removeClass", data => {
                   $(`#${data.color}`).removeClass("joinedGame");
@@ -369,8 +416,6 @@ function create() {
                 } else return;
               };
               generatePowerup();
-
-              // createBombCountPowerup(explosion.x, explosion.y);
               break;
             }
           }
@@ -380,31 +425,34 @@ function create() {
   });
 
   this.socket.on("newPlayer", data => {
-    console.log(this.player);
-    players.push(data.playerId);
-    this.player[data.playerId] = this.physics.add.sprite(data.spawnx, data.spawny, data.color).setSize(64, 64);
+    if (!gameStart && !gameOver) {
+      players.push(data.playerId);
+      this.player[data.playerId] = this.physics.add.sprite(data.spawnx, data.spawny, data.color).setSize(64, 64);
 
-    this.player[data.playerId]["bombCount"] = 1;
-    this.player[data.playerId]["speed"] = 200;
-    this.player[data.playerId]["bombPower"] = 1;
+      this.player[data.playerId]["bombCount"] = 1;
+      this.player[data.playerId]["speed"] = 200;
+      this.player[data.playerId]["bombPower"] = 1;
 
-    this.player[data.playerId].setCollideWorldBounds(true);
-    this.player[data.playerId].depth = 1;
+      this.player[data.playerId].setCollideWorldBounds(true);
+      this.player[data.playerId].depth = 1;
 
-    this.physics.add.collider(this.player[data.playerId], chest);
-    this.physics.add.collider(this.player[data.playerId], wall);
-    $(`#${data.color}`).addClass("joinedGame");
+      this.physics.add.collider(this.player[data.playerId], chest);
+      this.physics.add.collider(this.player[data.playerId], wall);
+      $(`#${data.color}`).addClass("joinedGame");
+    }
   });
 
   this.socket.on("disconnect", data => {
     this.player[data.playerId].destroy();
+    players.splice(players.indexOf(data.playerId), 1);
     $(`#${data.color}`).removeClass("joinedGame");
   });
 }
 
-const speed = 200;
-
 function update() {
+  if (gameStart && !gameOver && players.length === 1) {
+    gameOver = true;
+  }
   for (let player of players) {
     const increaseBombCount = (player, bombCountPowerup) => {
       player.bombCount = player.bombCount + 1;
@@ -418,7 +466,6 @@ function update() {
 
     const increaseMovementSpeed = (player, movementSpeedPowerup) => {
       player.speed = player.speed + 50;
-      console.log(player.speed);
       movementSpeedPowerup.destroy();
       msSound.play();
     };
@@ -426,7 +473,6 @@ function update() {
 
     const increaseBombPower = (player, bombPowerPowerup) => {
       player.bombPower = player.bombPower + 1;
-      console.log(player.bombPower);
       bombPowerPowerup.destroy();
       bombCountSound.play();
     };
