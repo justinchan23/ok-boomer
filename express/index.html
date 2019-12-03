@@ -123,7 +123,7 @@
     const typeNumber = 4;
     const errorCorrectionLevel = "L";
     let qr = qrcode(typeNumber, errorCorrectionLevel);
-    qr.addData("http://192.168.88.151:3000");
+    qr.addData("http://192.168.88.16:3000");
     qr.make();
     document.getElementById("code").innerHTML = qr.createImgTag();
   </script>

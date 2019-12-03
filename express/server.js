@@ -101,6 +101,9 @@ nspGame.on("connection", function(socket) {
     nspGame.emit("removeClass", players[data]);
     nspPlayers.to(data).emit("playerDied", true);
   });
+  socket.on("gameOver", data => {
+    nspPlayers.to(data).emit("playerWin", true);
+  });
 });
 
 server.listen(port, () => console.log(`Listening on port ${port}`));

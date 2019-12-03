@@ -31,7 +31,7 @@ const calculateCenterTileXY = playerLocation => {
 
 let gameStart = false;
 let gameOver = false;
-let time = 10;
+let time = 15;
 const countdown = () => {
   const timer = setInterval(() => {
     if (time === 0) {
@@ -452,6 +452,7 @@ function create() {
 function update() {
   if (gameStart && !gameOver && players.length === 1) {
     gameOver = true;
+    this.socket.emit("gameOver", players[0]);
   }
   for (let player of players) {
     const increaseBombCount = (player, bombCountPowerup) => {
