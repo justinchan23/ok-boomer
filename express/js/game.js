@@ -30,6 +30,7 @@ const calculateCenterTileXY = playerLocation => {
 };
 
 let gameStart = false;
+let gameOver = false;
 let time = 10;
 const countdown = () => {
   const timer = setInterval(() => {
@@ -149,7 +150,7 @@ function create() {
   //gameplay music
   const music = this.sound.add("gamemusic");
   music.loop = true;
-  music.play();
+  // music.play();
 
   const explosionSound = this.sound.add("bombExplosion");
   bombCountSound = this.sound.add("bombCountSound");
@@ -290,7 +291,7 @@ function create() {
   };
 
   this.socket.on("playerMovement", data => {
-    if (gameStart) {
+    if (gameStart && !gameOver) {
       movePlayer(data);
     }
   });
@@ -372,6 +373,7 @@ function create() {
             for (const player of players) {
               if (checkOverlap(this.player[player], explosion)) {
                 this.player[player].destroy();
+                players.splice(players.indexOf(data.playerId), 1);
                 this.socket.emit("playerDied", player);
                 this.socket.on("removeClass", data => {
                   $(`#${data.color}`).removeClass("joinedGame");
@@ -423,7 +425,7 @@ function create() {
   });
 
   this.socket.on("newPlayer", data => {
-    if (!gameStart) {
+    if (!gameStart && !gameOver) {
       players.push(data.playerId);
       this.player[data.playerId] = this.physics.add.sprite(data.spawnx, data.spawny, data.color).setSize(64, 64);
 
@@ -442,11 +444,15 @@ function create() {
 
   this.socket.on("disconnect", data => {
     this.player[data.playerId].destroy();
+    players.splice(players.indexOf(data.playerId), 1);
     $(`#${data.color}`).removeClass("joinedGame");
   });
 }
 
 function update() {
+  if (gameStart && !gameOver && players.length === 1) {
+    gameOver = true;
+  }
   for (let player of players) {
     const increaseBombCount = (player, bombCountPowerup) => {
       player.bombCount = player.bombCount + 1;
@@ -460,7 +466,6 @@ function update() {
 
     const increaseMovementSpeed = (player, movementSpeedPowerup) => {
       player.speed = player.speed + 50;
-      console.log(player.speed);
       movementSpeedPowerup.destroy();
       msSound.play();
     };
@@ -468,7 +473,6 @@ function update() {
 
     const increaseBombPower = (player, bombPowerPowerup) => {
       player.bombPower = player.bombPower + 1;
-      console.log(player.bombPower);
       bombPowerPowerup.destroy();
       bombCountSound.play();
     };
