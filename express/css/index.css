@@ -146,10 +146,17 @@ canvas {
 
 .start {
   z-index: 7;
-  margin-top: 29%;
+  margin-top: 37%;
   margin-left: 47%;
 }
 
 .hidden {
   display: none;
+}
+
+.countdown {
+  color: white !important;
+  margin-top: 20% !important;
+  position: fixed !important;
+  z-index: 6 !important;
 }

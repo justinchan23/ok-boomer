@@ -4,8 +4,8 @@ const config = {
   width: 1024,
   height: 1024,
   physics: {
-    default: "arcade",
-    arcade: { debug: SVGComponentTransferFunctionElement }
+    default: "arcade"
+    // arcade: { debug: SVGComponentTransferFunctionElement }
   },
   scene: {
     preload: preload,
@@ -28,6 +28,28 @@ let msSound;
 const calculateCenterTileXY = playerLocation => {
   return 32 - (playerLocation % 64) + playerLocation;
 };
+
+let gameStart = false;
+let time = 10;
+const countdown = () => {
+  const timer = setInterval(() => {
+    if (time === 0) {
+      clearInterval(timer);
+      gameStart = true;
+      $(".countdown").addClass("hidden");
+    } else {
+      time = time - 1;
+      $(".countdown").html(`<p>Game Starting in ${time} seconds!</p>`);
+      $(".countdown").removeClass("hidden");
+    }
+  }, 1000);
+};
+
+$(() => {
+  $(".start").click(() => {
+    countdown();
+  });
+});
 
 function preload() {
   this.load.spritesheet({
@@ -122,25 +144,12 @@ function preload() {
   this.load.image("bombPowerIncrease", "assets/powerups/bombpowerincrease.png");
 }
 
-const countdown = () => {
-  let time = 30;
-  const timer = setInterval(countdown, 1000);
-
-  const countdown = () => {
-    if (time === 0) {
-      return true;
-    } else {
-      return time;
-    }
-  };
-};
-
 function create() {
   this.socket = io("/game");
   //gameplay music
   const music = this.sound.add("gamemusic");
   music.loop = true;
-  // music.play();
+  music.play();
 
   const explosionSound = this.sound.add("bombExplosion");
   bombCountSound = this.sound.add("bombCountSound");
@@ -281,7 +290,9 @@ function create() {
   };
 
   this.socket.on("playerMovement", data => {
-    movePlayer(data);
+    if (gameStart) {
+      movePlayer(data);
+    }
   });
 
   // Stop any previous movement from the last frame
@@ -311,7 +322,8 @@ function create() {
       !isBombOnXY(
         (calculateCenterTileXY(this.player[data.playerId].x) - 32) / 64,
         (calculateCenterTileXY(this.player[data.playerId].y) - 32) / 64
-      )
+      ) &&
+      gameStart
     ) {
       this.bomb = this.physics.add
         .sprite(
@@ -411,19 +423,21 @@ function create() {
   });
 
   this.socket.on("newPlayer", data => {
-    players.push(data.playerId);
-    this.player[data.playerId] = this.physics.add.sprite(data.spawnx, data.spawny, data.color).setSize(64, 64);
+    if (!gameStart) {
+      players.push(data.playerId);
+      this.player[data.playerId] = this.physics.add.sprite(data.spawnx, data.spawny, data.color).setSize(64, 64);
 
-    this.player[data.playerId]["bombCount"] = 1;
-    this.player[data.playerId]["speed"] = 200;
-    this.player[data.playerId]["bombPower"] = 1;
+      this.player[data.playerId]["bombCount"] = 1;
+      this.player[data.playerId]["speed"] = 200;
+      this.player[data.playerId]["bombPower"] = 1;
 
-    this.player[data.playerId].setCollideWorldBounds(true);
-    this.player[data.playerId].depth = 1;
+      this.player[data.playerId].setCollideWorldBounds(true);
+      this.player[data.playerId].depth = 1;
 
-    this.physics.add.collider(this.player[data.playerId], chest);
-    this.physics.add.collider(this.player[data.playerId], wall);
-    $(`#${data.color}`).addClass("joinedGame");
+      this.physics.add.collider(this.player[data.playerId], chest);
+      this.physics.add.collider(this.player[data.playerId], wall);
+      $(`#${data.color}`).addClass("joinedGame");
+    }
   });
 
   this.socket.on("disconnect", data => {
@@ -431,8 +445,6 @@ function create() {
     $(`#${data.color}`).removeClass("joinedGame");
   });
 }
-
-const speed = 200;
 
 function update() {
   for (let player of players) {
