@@ -4,8 +4,8 @@ const config = {
   width: 1024,
   height: 1024,
   physics: {
-    default: "arcade"
-    // arcade: { debug: SVGComponentTransferFunctionElement }
+    default: "arcade",
+    arcade: { debug: SVGComponentTransferFunctionElement }
   },
   scene: {
     preload: preload,
@@ -14,8 +14,8 @@ const config = {
   }
 };
 
-const players = [];
 const game = new Phaser.Game(config);
+const players = [];
 let bombCountGroup;
 let movementSpeedGroup;
 let bombPowerGroup;
@@ -23,10 +23,38 @@ let bombCountSound;
 let msSound;
 
 function preload() {
-  this.load.image("white", "assets/characters/white.png");
-  this.load.image("black", "assets/characters/black.png");
-  this.load.image("blue", "assets/characters/blue.png");
-  this.load.image("red", "assets/characters/red.png");
+  this.load.spritesheet({
+    key: "white",
+    url: "assets/characters/characters-white.png",
+    frameConfig: {
+      frameWidth: 71,
+      frameHeight: 56
+    }
+  });
+  this.load.spritesheet({
+    key: "black",
+    url: "assets/characters/characters-black.png",
+    frameConfig: {
+      frameWidth: 71,
+      frameHeight: 56
+    }
+  });
+  this.load.spritesheet({
+    key: "blue",
+    url: "assets/characters/characters-blue.png",
+    frameConfig: {
+      frameWidth: 71,
+      frameHeight: 56
+    }
+  });
+  this.load.spritesheet({
+    key: "red",
+    url: "assets/characters/characters-red.png",
+    frameConfig: {
+      frameWidth: 71,
+      frameHeight: 56
+    }
+  });
 
   this.load.audio({
     key: "gamemusic",
@@ -113,10 +141,6 @@ function create() {
   movementSpeedGroup = this.physics.add.group();
   bombPowerGroup = this.physics.add.group();
 
-  // const createBombCountPowerup = (x, y) => {
-  //   let z = bombCountPowerup.add(this.physics.add.sprite(x, y, "bombCountIncrease").setSize(64, 64));
-  // };
-
   //hash maps
   this.chestMap = {};
   for (let chest of this.chest) {
@@ -142,17 +166,6 @@ function create() {
     this.bombMap[`${x},${y}`] = true;
   };
 
-  //collision for world bounds
-  // this.player.setCollideWorldBounds(true);
-
-  // this.physics.add.collider(this.player, this.blocksLayer);
-
-  // up = this.input.keyboard.addKey("W");
-  // left = this.input.keyboard.addKey("A");
-  // right = this.input.keyboard.addKey("D");
-  // down = this.input.keyboard.addKey("S");
-  // space = this.input.keyboard.addKey("SPACE");
-
   //bomb animation
   this.anims.create({
     key: "boom",
@@ -168,38 +181,69 @@ function create() {
     frameRate: 30,
     repeat: 0
   });
+
   const movePlayer = data => {
+    //player turn animation
+    this.anims.create({
+      key: `${this.player[data.playerId].texture.key}-left`,
+      frames: this.anims.generateFrameNumbers(`${this.player[data.playerId].texture.key}`, { start: 3, end: 3 }),
+      repeat: -1
+    });
+    this.anims.create({
+      key: `${this.player[data.playerId].texture.key}-right`,
+      frames: this.anims.generateFrameNumbers(`${this.player[data.playerId].texture.key}`, { start: 1, end: 1 }),
+      repeat: -1
+    });
+    this.anims.create({
+      key: `${this.player[data.playerId].texture.key}-down`,
+      frames: this.anims.generateFrameNumbers(`${this.player[data.playerId].texture.key}`, { start: 0, end: 0 }),
+      repeat: -1
+    });
+    this.anims.create({
+      key: `${this.player[data.playerId].texture.key}-up`,
+      frames: this.anims.generateFrameNumbers(`${this.player[data.playerId].texture.key}`, { start: 2, end: 2 }),
+      repeat: -1
+    });
+
     //down
     if ((data.angle >= 0 && data.angle < 22.5) || (data.angle < 359 && data.angle > 337.5)) {
+      this.player[data.playerId].play(`${this.player[data.playerId].texture.key}-down`, true);
       this.player[data.playerId].body.setVelocityY(this.player[data.playerId].speed);
       //right/down
     } else if (data.angle >= 22.5 && data.angle < 67.5) {
+      this.player[data.playerId].play(`${this.player[data.playerId].texture.key}-right`, true);
       this.player[data.playerId].body.setVelocityX(this.player[data.playerId].speed);
       this.player[data.playerId].body.setVelocityY(this.player[data.playerId].speed);
 
       //right
     } else if (data.angle >= 67.5 && data.angle < 112.5) {
+      this.player[data.playerId].play(`${this.player[data.playerId].texture.key}-right`, true);
       this.player[data.playerId].body.setVelocityX(this.player[data.playerId].speed);
       //right/up
     } else if (data.angle >= 112.5 && data.angle < 157.5) {
+      this.player[data.playerId].play(`${this.player[data.playerId].texture.key}-right`, true);
       this.player[data.playerId].body.setVelocityX(this.player[data.playerId].speed);
       this.player[data.playerId].body.setVelocityY(-this.player[data.playerId].speed);
 
       //up
     } else if (data.angle >= 157.5 && data.angle < 202.5) {
+      this.player[data.playerId].play(`${this.player[data.playerId].texture.key}-up`, true);
       this.player[data.playerId].body.setVelocityY(-this.player[data.playerId].speed);
 
       //up/left
     } else if (data.angle >= 202.5 && data.angle < 247.5) {
+      this.player[data.playerId].play(`${this.player[data.playerId].texture.key}-left`, true);
       this.player[data.playerId].body.setVelocityX(-this.player[data.playerId].speed);
       this.player[data.playerId].body.setVelocityY(-this.player[data.playerId].speed);
 
       //left
     } else if (data.angle >= 247.5 && data.angle < 292.5) {
+      this.player[data.playerId].play(`${this.player[data.playerId].texture.key}-left`, true);
       this.player[data.playerId].body.setVelocityX(-this.player[data.playerId].speed);
 
       //down/left
     } else if (data.angle >= 292.5 && data.angle < 337.5) {
+      this.player[data.playerId].play(`${this.player[data.playerId].texture.key}-left`, true);
       this.player[data.playerId].body.setVelocityX(-this.player[data.playerId].speed);
       this.player[data.playerId].body.setVelocityY(this.player[data.playerId].speed);
     }
