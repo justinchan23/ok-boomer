@@ -54,6 +54,7 @@ canvas {
   width: 100%;
   border-radius: 15px;
   padding-top: 10px;
+  margin-bottom: 20px;
 }
 
 .bombs {
@@ -64,9 +65,21 @@ canvas {
   margin-bottom: 0;
 }
 
+.bombImage {
+  height: 60%;
+  width: 60%;
+  margin-left: 0%;
+}
+
+#count {
+  color: black;
+}
+
 .bombCount {
   margin-top: 0px;
   font-size: 12px !important;
+  display: flex;
+  justify-content: center;
 }
 img {
   display: block;

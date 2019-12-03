@@ -38,6 +38,7 @@
           <p id="powerupTitle">Power Ups:</p>
           <img src="./assets/powerups/bombincrease.png" class="powerups" />
           <p id="powerupTitle"><i class="fas fa-arrow-up"></i> Bomb Count</p>
+          <span></span>
 
           <img src="./assets/powerups/bombpowerincrease.png" class="powerups" />
           <p id="powerupTitle"><i class="fas fa-arrow-up"></i> Bomb Power</p>
@@ -47,6 +48,7 @@
         </div>
       </div>
     </div>
+
     <div id="players" class="nes-container is-dark with-title">
       <p class="title">Players</p>
       <div class="cont">
@@ -54,33 +56,43 @@
           <div class="char">
             <img src="./assets/characters/white.png" alt="white" id="white" />
           </div>
-          <p class="bombs">bombs available:</p>
-          <p class="bombs bombCount" id="whiteBombCount">1</p>
+          <div class="bombs bombCount" >
+            <div><img class="bombImage" src="./assets/powerups/bombincrease.png" /></div>
+            <p id="whiteBombCount">: 1</p>
+          </div>
+        </div>
         </div>
         <div class="player">
           <div class="char">
             <img src="./assets/characters/blue.png" alt="blue" id="blue" />
           </div>
-          <p class="bombs">bombs available:</p>
-          <p class="bombs bombCount" id="blueBombCount">1</p>
+          <div class="bombs bombCount" >
+              <div><img class="bombImage" src="./assets/powerups/bombincrease.png" /></div>
+              <p id="blueBombCount">: 1</p>
+            </div>
         </div>
         <div class="player">
           <div class="char">
             <img src="./assets/characters/black.png" alt="black" id="black" />
           </div>
-          <p class="bombs">bombs available:</p>
-          <p class="bombs bombCount" id="blackBombCount">1</p>
+          <div class="bombs bombCount" >
+              <div><img class="bombImage" src="./assets/powerups/bombincrease.png" /></div>
+              <p id="blackBombCount">: 1</p>
+            </div>
         </div>
         <div class="player">
           <div class="char">
             <img src="./assets/characters/red.png" alt="red" id="red" />
           </div>
-          <p class="bombs">bombs available:</p>
-          <p class="bombs bombCount" id="redBombCount">1</p>
+          <div class="bombs bombCount" >
+              <div><img class="bombImage" src="./assets/powerups/bombincrease.png" /></div>
+              <p id="whiteBombCount">: 1</p>
+            </div>
         </div>
       </div>
     </div>
   </body>
+
   <script
     src="https://code.jquery.com/jquery-3.4.1.slim.js"
     integrity="sha256-BTlTdQO9/fascB1drekrDVkaKd9PkwBymMlHOiG+qLI="
