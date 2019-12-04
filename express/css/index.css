@@ -167,7 +167,15 @@ canvas {
 }
 .countdown {
   color: white !important;
-  margin-top: 20% !important;
+  margin-top: 25% !important;
   position: fixed !important;
   z-index: 6 !important;
+}
+
+.winner {
+  z-index: 6 !important;
+  position: fixed !important;
+  margin-top: 25% !important;
+  justify-content: center !important;
+  text-align: center !important;
 }

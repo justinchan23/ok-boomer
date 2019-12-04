@@ -7,7 +7,7 @@ import "./Dpad.css";
 import io from "socket.io-client";
 import ReactNipple from "react-nipple";
 
-let socketClient = io("http://192.168.88.16:3001/players");
+let socketClient = io("http://192.168.88.159:3001/players");
 
 export default function Default() {
   const [colorId, setColorId] = useState("");
