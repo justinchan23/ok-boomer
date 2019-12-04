@@ -40,7 +40,7 @@ const countdown = () => {
       $(".countdown").addClass("hidden");
     } else {
       time = time - 1;
-      $(".countdown").html(`<p>Game Starting in ${time} seconds!</p>`);
+      $(".countdown").html(`<p>Game Starting In ${time} Seconds!</p>`);
       $(".countdown").removeClass("hidden");
     }
   }, 1000);
@@ -453,6 +453,10 @@ function update() {
   if (gameStart && !gameOver && players.length === 1) {
     gameOver = true;
     this.socket.emit("gameOver", players[0]);
+    $(".winner").html(
+      `<img src='./assets/characters/${this.player[players[0]].texture.key}.png'/> <p>You Boomed All Your Friends!</p>`
+    );
+    $(".winner").removeClass("hidden");
   }
   for (let player of players) {
     const increaseBombCount = (player, bombCountPowerup) => {
