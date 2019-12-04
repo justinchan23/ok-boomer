@@ -19,7 +19,7 @@ const game = new Phaser.Game(config);
 const players = [];
 
 let bombCountGroup;
-let movementSpeedGroup;
+let movementSpeedroup;
 let bombPowerGroup;
 let bombCountSound;
 let msSound;
@@ -90,7 +90,8 @@ function preload() {
     key: "gamemusic",
     url: "assets/audio/music.mp3",
     config: {
-      loop: true
+      loop: true,
+      volume: 0.5
     }
   });
 
@@ -445,19 +446,26 @@ function create() {
   this.socket.on("disconnect", data => {
     if (this.player[data.playerId]) {
       this.player[data.playerId].destroy();
-      players.splice(players.indexOf(data.playerId), 1);
+      players.splice(players.indexOf(data.playerxId), 1);
       $(`#${data.color}`).removeClass("joinedGame");
     }
   });
 }
 
 function update() {
-  if (gameStart && !gameOver && players.length === 1) {
-    this.socket.emit("gameOver", players[0]);
-    $(".winner").html(
-      `<img src='./assets/characters/${this.player[players[0]].texture.key}.png'/> <p>You Boomed All Your Friends!</p>`
-    );
-    $(".winner").removeClass("hidden");
+  if (gameStart && !gameOver && players.length <= 1) {
+    if (players.length === 1) {
+      this.socket.emit("gameOver", players[0]);
+      $(".winner").html(
+        `<img src='./assets/characters/${
+          this.player[players[0]].texture.key
+        }.png'/> <p>You Boomed All Your Friends!</p>`
+      );
+      $(".winner").removeClass("hidden");
+    } else if (players.length === 0) {
+      $(".winner").html(` <p>Everyone Is Dead!</p>`);
+      $(".winner").removeClass("hidden");
+    }
     gameOver = true;
   }
   for (let player of players) {
