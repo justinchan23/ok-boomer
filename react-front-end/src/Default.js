@@ -35,7 +35,7 @@ export default function Default() {
   return winner ? (
     <Result id={"died"} name={"You Win!"}></Result>
   ) : lose ? (
-    <Result id={"died"} name={"You Blew Up, Get Rekt"}></Result>
+    <Result id={"died"} name={"Not Even Close"}></Result>
   ) : (
     <div id={colorId}>
       <div class="bombDiv">
