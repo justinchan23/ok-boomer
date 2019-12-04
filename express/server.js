@@ -45,6 +45,8 @@ const spawnPlayer = (spawnPoints, socketID) => {
       playerId: socketID
     };
     nspPlayers.to(socketID).emit("changeColor", spawnPoints[0][2]);
+    // update all other players of the new player
+    nspGame.emit("newPlayer", players[socketID]);
     spawnPoints.shift();
   }
 
@@ -65,9 +67,6 @@ nspPlayers.on("connection", function(socket) {
     nspGame.emit("disconnect", players[socket.id]);
     delete players[socket.id];
   });
-
-  // update all other players of the new player
-  nspGame.emit("newPlayer", players[socket.id]);
 
   nspGame.emit("allPlayers", players);
 
