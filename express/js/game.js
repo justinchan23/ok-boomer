@@ -31,7 +31,7 @@ const calculateCenterTileXY = playerLocation => {
 
 let gameStart = false;
 let gameOver = false;
-let time = 15;
+let time = 30;
 const countdown = () => {
   const timer = setInterval(() => {
     if (time === 0) {
@@ -150,7 +150,7 @@ function create() {
   //gameplay music
   const music = this.sound.add("gamemusic");
   music.loop = true;
-  // music.play();
+  music.play();
 
   const explosionSound = this.sound.add("bombExplosion");
   bombCountSound = this.sound.add("bombCountSound");
@@ -373,11 +373,11 @@ function create() {
             for (const player of players) {
               if (checkOverlap(this.player[player], explosion)) {
                 this.player[player].destroy();
-                players.splice(players.indexOf(data.playerId), 1);
                 this.socket.emit("playerDied", player);
                 this.socket.on("removeClass", data => {
                   $(`#${data.color}`).removeClass("joinedGame");
                 });
+                players.splice(players.indexOf(player), 1);
               }
             }
             //break if explosion collides with walls
@@ -443,20 +443,22 @@ function create() {
   });
 
   this.socket.on("disconnect", data => {
-    this.player[data.playerId].destroy();
-    players.splice(players.indexOf(data.playerId), 1);
-    $(`#${data.color}`).removeClass("joinedGame");
+    if (this.player[data.playerId]) {
+      this.player[data.playerId].destroy();
+      players.splice(players.indexOf(data.playerId), 1);
+      $(`#${data.color}`).removeClass("joinedGame");
+    }
   });
 }
 
 function update() {
   if (gameStart && !gameOver && players.length === 1) {
-    gameOver = true;
     this.socket.emit("gameOver", players[0]);
     $(".winner").html(
       `<img src='./assets/characters/${this.player[players[0]].texture.key}.png'/> <p>You Boomed All Your Friends!</p>`
     );
     $(".winner").removeClass("hidden");
+    gameOver = true;
   }
   for (let player of players) {
     const increaseBombCount = (player, bombCountPowerup) => {
