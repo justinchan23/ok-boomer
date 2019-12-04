@@ -31,7 +31,7 @@ const calculateCenterTileXY = playerLocation => {
 
 let gameStart = false;
 let gameOver = false;
-let time = 30;
+let time = 45;
 const countdown = () => {
   const timer = setInterval(() => {
     if (time === 0) {
@@ -40,7 +40,9 @@ const countdown = () => {
       $(".countdown").addClass("hidden");
     } else {
       time = time - 1;
-      $(".countdown").html(`<p>Game Starting In ${time} Seconds!</p>`);
+      $(".countdown").html(
+        `<p style= 'margin-left: 18%;' >Game Starting In ${time} Seconds!</p> <img style= 'margin-left: 23%; height: 200px; width: 400px;' src='../assets/controls.jpeg' /> <p>Please have your phone locked to portrait mode!</p>`
+      );
       $(".countdown").removeClass("hidden");
     }
   }, 1000);

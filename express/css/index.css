@@ -167,7 +167,7 @@ canvas {
 }
 .countdown {
   color: white !important;
-  margin-top: 25% !important;
+  margin-top: 20% !important;
   position: fixed !important;
   z-index: 6 !important;
 }
