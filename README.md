@@ -1,8 +1,29 @@
 # Ok, Boomer
 
+## Main Page
+
+!["Main Page"](https://github.com/umrude/ok-boomer/blob/master/react-front-end/src/screenshots/mainpage.gif?raw=true)
+
+## Game Play
+
+!["Game Play 1"](https://github.com/umrude/ok-boomer/blob/master/react-front-end/src/screenshots/gamePlay1.gif?raw=true)
+!["Game Play 2"](https://github.com/umrude/ok-boomer/blob/master/react-front-end/src/screenshots/gamePlay2.gif?raw=true)
+!["Game Play 3"](https://github.com/umrude/ok-boomer/blob/master/react-front-end/src/screenshots/gamePlay3.gif?raw=true)
+!["Draw"](https://github.com/umrude/ok-boomer/blob/master/react-front-end/src/screenshots/draw.gif?raw=true)
+
+## Reset Game
+
+!["Reset"](https://github.com/umrude/ok-boomer/blob/master/react-front-end/src/screenshots/reset.gif?raw=true)
+
+## Controller
+
+!["Controller"](https://github.com/umrude/ok-boomer/blob/master/react-front-end/src/screenshots/controller.jpeg?raw=true)
+!["Winner"](https://github.com/umrude/ok-boomer/blob/master/react-front-end/src/screenshots/winner.jpg?raw=true)
+!["Loser"](https://github.com/umrude/ok-boomer/blob/master/react-front-end/src/screenshots/loser.jpeg?raw=true)
+
 ## Description
 
-Ok, Boomer is a Phaser.js based game with a React based controller. The goal of the game is to be the last one standing in a battle-royale styled match.
+Ok, Boomer is a Phaser.js based multiplayer game (up to 4 players) with a React based controller via mobile devices. The goal of the game is to be the last one standing in a battle-royale styled match.
 
 ## Running The Game
 
