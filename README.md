@@ -25,9 +25,9 @@
 
 Ok, Boomer is a Phaser.js based multiplayer game (up to 4 players) with a React based controller via mobile devices.
 
-The controllers will change colors accordingly relative to the character you have been logged into at random. A message will be prompt on your controller when you win or lose.
+The controllers will change colors relative to the character randomly selected for you on connection. A message will appear on your controller if you win or lose.
 
-The goal of the game is to be the last one standing in a battle-royale styled match.
+The goal of the game is to be the last one standing in a battle-royale style match.
 
 ## Running The Game
 
