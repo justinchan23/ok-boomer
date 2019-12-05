@@ -55,13 +55,10 @@ const spawnPlayer = (spawnPoints, socketID) => {
 //player namespace
 const nspPlayers = io.of("/players");
 nspPlayers.on("connection", function(socket) {
-  console.log("someone connected player side", socket.id);
-
   // create a new player and add it to our players object
   spawnPlayer(spawnPoints, socket.id);
 
   socket.on("disconnect", () => {
-    console.log("someone disconnected ", players[socket.id]);
     spawnPoints.push([players[socket.id]["spawnx"], players[socket.id]["spawny"], players[socket.id]["color"]]);
     // emit a message to all players to remove this player
     nspGame.emit("disconnect", players[socket.id]);
@@ -74,17 +71,13 @@ nspPlayers.on("connection", function(socket) {
     nspGame.emit("playerMovement", data);
   };
   socket.on("playerMovement", data => {
-    console.log("movingPlayer", data);
-
     emitPlayerMove(data);
   });
   socket.on("playerMovementEnd", data => {
-    console.log("movingPlayerEnd");
     nspGame.emit("playerMovementEnd", data);
   });
 
   socket.on("dropBomb", data => {
-    console.log("Dropping bomb");
     nspGame.emit("dropBomb", data);
   });
 });
@@ -92,10 +85,7 @@ nspPlayers.on("connection", function(socket) {
 //game namespace
 const nspGame = io.of("/game");
 nspGame.on("connection", function(socket) {
-  console.log("someone connected game side ", socket.id);
-  socket.on("disconnect", () => {
-    console.log("someone disconnected game side", socket.id);
-  });
+  socket.on("disconnect", () => {});
   socket.on("playerDied", data => {
     nspGame.emit("removeClass", players[data]);
     nspPlayers.to(data).emit("playerDied", true);
