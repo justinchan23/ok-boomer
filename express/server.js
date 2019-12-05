@@ -85,7 +85,6 @@ nspPlayers.on("connection", function(socket) {
 //game namespace
 const nspGame = io.of("/game");
 nspGame.on("connection", function(socket) {
-  socket.on("disconnect", () => {});
   socket.on("playerDied", data => {
     nspGame.emit("removeClass", players[data]);
     nspPlayers.to(data).emit("playerDied", true);
