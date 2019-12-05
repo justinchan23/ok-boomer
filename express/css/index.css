@@ -172,6 +172,14 @@ canvas {
   z-index: 6 !important;
 }
 
+.countdown > img {
+  margin-left: 23%;
+  height: 200px;
+  width: 400px;
+  box-shadow: 5px 7px #888888;
+  border-radius: 8px;
+}
+
 .winner {
   z-index: 6 !important;
   position: fixed !important;

@@ -29,6 +29,17 @@
       document.addEventListener("gesturestart", function(e) {
         e.preventDefault();
       });
+      document.addEventListener(
+        "touchstart",
+        event => {
+          if (event.touches.length > 1) {
+            console.log("zoom plz stahp");
+            event.preventDefault();
+            event.stopPropagation(); // maybe useless
+          }
+        },
+        { passive: false }
+      );
     </script>
     <style>
       html,
